@@ -285,6 +285,10 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
         </select>
       </div>
       <div class="ff"><label>Anything specific you want us to know?</label><textarea id="oo" placeholder="e.g. I've been in the same company for 8 years and need help showing progression..."></textarea></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px">
+        <input type="checkbox" id="o-terms" style="width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--accent)">
+        <label for="o-terms" style="font-size:12px;color:var(--muted);line-height:1.6;margin:0;cursor:pointer">I agree to the service terms: I understand this is a one-time professional service. Delivery within 48–72 hours of intake form submission. Two rounds of revisions included. Full refund if the final deliverable doesn't meet the brief after revisions. By checking this box I confirm I have read and accept these terms. <em>This constitutes a legally binding electronic acceptance.</em></label>
+      </div>
       <button class="btn-primary" style="width:100%;margin-top:4px" onclick="submitOrder()">Confirm my order →</button>
       <div id="order-err" style="color:#ef4444;font-size:12px;margin-top:8px;display:none"></div>
     </div>
@@ -612,6 +616,7 @@ function submitOrder(){
   const err=document.getElementById('order-err');
   err.style.display='none';
   if(!name||!email||!title){err.textContent='Please add your name, email, and current job title.';err.style.display='block';return}
+  if(!document.getElementById('o-terms').checked){err.textContent='Please accept the service terms to continue.';err.style.display='block';return}
   const subject=encodeURIComponent(`Resume & LinkedIn Order — ${name} — ${pkg}`);
   const body=encodeURIComponent(`New order received:\n\nName: ${name}\nEmail: ${email}\nCurrent title: ${title}\nTarget role: ${goal||'Not specified'}\nPackage: ${pkg}\nNotes: ${notes||'None'}\n\nPlease send intake form to: ${email}`);
   window.location.href=`mailto:zaydeenbecher0@gmail.com?subject=${subject}&body=${body}`;
