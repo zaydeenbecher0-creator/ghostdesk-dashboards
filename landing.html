@@ -114,6 +114,7 @@ section{padding:72px 24px;max-width:960px;margin:0 auto}
 footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--subtle)}
 
 /* MOBILE */
+.form-two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px}.ff{margin-bottom:14px}.ff label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.ff input,.ff textarea,.ff select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s}.ff input:focus,.ff textarea:focus,.ff select:focus{border-color:var(--accent)}.ff textarea{min-height:90px;resize:vertical}.ff select option{background:var(--surface2)}
 @media(max-width:700px){
   .problem-grid,.pricing-grid{grid-template-columns:1fr}
   .proof-bar{gap:20px}
@@ -197,6 +198,107 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
   <div class="pricing-grid" id="pricing-grid"></div>
 </section>
 
+<!-- FREE SAMPLE (ghost) -->
+<section id="free-sample" style="display:none;border-top:1px solid var(--border)">
+  <div class="section-tag">Free sample post</div>
+  <h2 class="section-title">See what we'd write for you</h2>
+  <p class="section-sub">No commitment. Drop your topic — we'll generate a real sample LinkedIn post right here.</p>
+  <div class="form-two-col">
+    <div class="form-panel">
+      <div class="ff"><label>Your name</label><input id="sn" placeholder="e.g. Alex Chen"></div>
+      <div class="ff"><label>Your role & company</label><input id="sr" placeholder="e.g. CEO, Vantage Fintech"></div>
+      <div class="ff"><label>Your email (we'll send a copy)</label><input id="se" type="email" placeholder="alex@vantage.co"></div>
+      <div class="ff"><label>Topic, insight, or story from this week</label><textarea id="st" placeholder="e.g. Had a meeting today where the investor kept asking us to compare ourselves to the US version. I pushed back. Here's why..." style="min-height:120px"></textarea></div>
+      <button class="btn-primary" style="width:100%;margin-top:4px" onclick="genSample()" id="samp-btn">Generate my sample post →</button>
+      <div id="samp-err" style="color:#ef4444;font-size:12px;margin-top:8px;display:none"></div>
+    </div>
+    <div class="form-panel">
+      <div id="samp-empty-state" style="color:var(--muted);font-size:13px;line-height:1.8;padding:20px 0">Your post will appear here in seconds. It will be written in your voice, based on the topic you share.</div>
+      <div id="samp-result" style="display:none">
+        <div class="output-preview">
+          <div class="output-header"><span class="output-dot" style="background:#ef4444"></span><span class="output-dot" style="background:#f59e0b"></span><span class="output-dot" style="background:#22c55e"></span><span class="output-title">Your LinkedIn post</span></div>
+          <div class="output-body"><div id="samp-post" style="font-size:13px;line-height:1.8;white-space:pre-wrap"></div><div id="samp-time" style="font-size:11px;color:var(--muted);margin-top:10px"></div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <a href="https://calendly.com/zaydeenbecher0/30min" target="_blank" class="btn-primary" style="font-size:13px">Start for $800/mo →</a>
+          <button class="btn-ghost" style="font-size:13px" onclick="copySamp()">Copy post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FREE PROPOSAL (outreach) -->
+<section id="free-proposal" style="display:none;border-top:1px solid var(--border)">
+  <div class="section-tag">Free proposal</div>
+  <h2 class="section-title">Get a tailored OutreachOS proposal</h2>
+  <p class="section-sub">Tell us about your business. We'll generate a custom proposal with projected results in under 60 seconds.</p>
+  <div class="form-two-col">
+    <div class="form-panel">
+      <div class="ff"><label>Your name</label><input id="pn" placeholder="e.g. Remi Okafor"></div>
+      <div class="ff"><label>Company & website</label><input id="pc" placeholder="e.g. Vantage Growth — vantage.co"></div>
+      <div class="ff"><label>Your email</label><input id="pe" type="email" placeholder="remi@vantage.co"></div>
+      <div class="ff"><label>Who are your ideal customers?</label><textarea id="pi" placeholder="e.g. HR Directors and Heads of Payroll at fintech companies with 50–500 employees in the UAE and South Africa"></textarea></div>
+      <div class="ff"><label>Biggest pipeline challenge right now</label><textarea id="pp" placeholder="e.g. Our team spends too much time prospecting manually and we're not hitting our meeting targets..."></textarea></div>
+      <div class="ff"><label>Monthly budget range</label>
+        <select id="pb" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);width:100%;font-size:13px">
+          <option value="800">$800/month (Launch)</option>
+          <option value="1500" selected>$1,500/month (Scale)</option>
+          <option value="2500">$2,500/month (Dominate)</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:4px" onclick="genProposal()" id="prop-btn">Generate my proposal →</button>
+      <div id="prop-err" style="color:#ef4444;font-size:12px;margin-top:8px;display:none"></div>
+    </div>
+    <div class="form-panel">
+      <div id="prop-empty-state" style="color:var(--muted);font-size:13px;line-height:1.8;padding:20px 0">Your custom proposal will appear here — including projected lead volume, estimated reply rates, and a campaign plan tailored to your ICP.</div>
+      <div id="prop-result" style="display:none">
+        <div class="output-preview">
+          <div class="output-header"><span class="output-dot" style="background:#ef4444"></span><span class="output-dot" style="background:#f59e0b"></span><span class="output-dot" style="background:#22c55e"></span><span class="output-title" id="prop-title-label">Your OutreachOS Proposal</span></div>
+          <div class="output-body" style="max-height:420px;overflow-y:auto"><div id="prop-body" style="font-size:12px;line-height:1.8;white-space:pre-wrap"></div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <a href="https://calendly.com/zaydeenbecher0/30min" target="_blank" class="btn-primary" style="font-size:13px">Ready to start →</a>
+          <button class="btn-ghost" style="font-size:13px" onclick="copyProp()">Copy proposal</button>
+          <button class="btn-ghost" style="font-size:13px" onclick="emailProp()">Send to my email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER NOW (resume) -->
+<section id="order-now" style="display:none;border-top:1px solid var(--border)">
+  <div class="section-tag">Start your order</div>
+  <h2 class="section-title">Ready to get repositioned?</h2>
+  <p class="section-sub">Fill in your details below. We'll send your intake form within 2 hours and have your rewrite delivered within 48–72 hours.</p>
+  <div class="form-two-col">
+    <div class="form-panel">
+      <div class="ff"><label>Your name</label><input id="on" placeholder="e.g. Sarah Kim"></div>
+      <div class="ff"><label>Your email</label><input id="oe" type="email" placeholder="sarah@email.com"></div>
+      <div class="ff"><label>Current job title</label><input id="ot" placeholder="e.g. Senior Product Manager at Google"></div>
+      <div class="ff"><label>Target role or next step</label><input id="og" placeholder="e.g. VP of Product at a Series B fintech"></div>
+      <div class="ff"><label>Package selected</label>
+        <select id="op" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);width:100%;font-size:13px">
+          <option value="Essential — $250">Essential — $250 one-time</option>
+          <option value="Professional — $450" selected>Professional — $450 one-time</option>
+        </select>
+      </div>
+      <div class="ff"><label>Anything specific you want us to know?</label><textarea id="oo" placeholder="e.g. I've been in the same company for 8 years and need help showing progression..."></textarea></div>
+      <button class="btn-primary" style="width:100%;margin-top:4px" onclick="submitOrder()">Confirm my order →</button>
+      <div id="order-err" style="color:#ef4444;font-size:12px;margin-top:8px;display:none"></div>
+    </div>
+    <div class="form-panel">
+      <div id="order-confirm" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px">
+        <div style="font-size:28px;margin-bottom:12px">✓</div>
+        <div style="font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px">Order confirmed!</div>
+        <div id="order-confirm-msg" style="font-size:13px;color:var(--muted);line-height:1.8"></div>
+      </div>
+      <div id="order-empty-state" style="color:var(--muted);font-size:13px;line-height:1.8;padding:20px 0">Once you confirm your order, we'll send your intake form within 2 hours. Attach your current resume and the job descriptions you're targeting — we'll handle the rest.</div>
+    </div>
+  </div>
+</section>
+
 <!-- FAQ -->
 <section style="border-top:1px solid var(--border)">
   <div class="section-tag">Questions</div>
@@ -254,9 +356,9 @@ const content={
     priceTitle:'Simple, transparent pricing',
     priceSub:'No setup fees. No long-term lock-in. Cancel anytime with 30 days notice.',
     tiers:[
-      {name:'Starter',price:'$800',cadence:'/month',pop:false,features:['8 LinkedIn posts/month','Voice memo → post pipeline','1 platform (LinkedIn or X)','Monthly content calendar','Monthly performance report'],cta:'Get started'},
-      {name:'Growth',price:'$1,250',cadence:'/month',pop:true,features:['12–15 posts/month','Both platforms (LinkedIn + X)','Voice memo → post pipeline','Monthly content calendar + report','Repurposing existing content','Engagement strategy notes'],cta:'Book a strategy session'},
-      {name:'Executive',price:'$2,000',cadence:'/month',pop:false,features:['20+ posts/month','LinkedIn + X + newsletter','Ghostwritten articles','Weekly strategy call (30 min)','Unlimited revisions','Priority turnaround'],cta:'Get started'}
+      {name:'Starter',price:'$800',cadence:'/month',pop:false,features:['8 LinkedIn posts/month','Voice memo → post pipeline','1 platform (LinkedIn or X)','Monthly content calendar','Monthly performance report'],cta:'Get a free sample post',ctaLink:'#free-sample'},
+      {name:'Growth',price:'$1,250',cadence:'/month',pop:true,features:['12–15 posts/month','Both platforms (LinkedIn + X)','Voice memo → post pipeline','Monthly content calendar + report','Repurposing existing content','Engagement strategy notes'],cta:'Get a free sample post',ctaLink:'#free-sample'},
+      {name:'Executive',price:'$2,000',cadence:'/month',pop:false,features:['20+ posts/month','LinkedIn + X + newsletter','Ghostwritten articles','Weekly strategy call (30 min)','Unlimited revisions','Priority turnaround'],cta:'Book a strategy session',ctaLink:'https://calendly.com/zaydeenbecher0/30min'}
     ],
     faqs:[
       {q:'How do you match my voice?',a:'Before your first batch, we collect 3–5 of your existing posts or writing samples. We build a voice profile — your phrases, topics, tone, things to avoid. Every post is calibrated to that profile. Most clients say the output sounds more like them than what they\'d write themselves.'},
@@ -302,9 +404,9 @@ const content={
     priceTitle:'Simple, transparent pricing',
     priceSub:'No setup fees. No lock-in. Cancel anytime with 30 days notice.',
     tiers:[
-      {name:'Launch',price:'$800',cadence:'/month',pop:false,features:['100 qualified leads/month','3-email cold sequence','1 ICP / campaign','Weekly reply handling','Monthly campaign report'],cta:'Get started'},
-      {name:'Scale',price:'$1,500',cadence:'/month',pop:true,features:['200 qualified leads/month','5-email cold sequence','2 ICPs / campaigns','A/B subject line testing','Weekly reply handling','Monthly report + recommendations'],cta:'Book a strategy session'},
-      {name:'Dominate',price:'$2,500',cadence:'/month',pop:false,features:['400+ qualified leads/month','Up to 4 ICPs','LinkedIn + email combo','Daily reply handling','Full A/B testing programme','Bi-weekly strategy call'],cta:'Get started'}
+      {name:'Launch',price:'$800',cadence:'/month',pop:false,features:['100 qualified leads/month','3-email cold sequence','1 ICP / campaign','Weekly reply handling','Monthly campaign report'],cta:'Get your free proposal',ctaLink:'#free-proposal'},
+      {name:'Scale',price:'$1,500',cadence:'/month',pop:true,features:['200 qualified leads/month','5-email cold sequence','2 ICPs / campaigns','A/B subject line testing','Weekly reply handling','Monthly report + recommendations'],cta:'Get your free proposal',ctaLink:'#free-proposal'},
+      {name:'Dominate',price:'$2,500',cadence:'/month',pop:false,features:['400+ qualified leads/month','Up to 4 ICPs','LinkedIn + email combo','Daily reply handling','Full A/B testing programme','Bi-weekly strategy call'],cta:'Book a strategy session',ctaLink:'https://calendly.com/zaydeenbecher0/30min'}
     ],
     faqs:[
       {q:'How do you find the leads?',a:'We use Apollo.io for ICP-filtered searches and Explorium for data enrichment and email verification. Every lead is filtered against your ICP criteria and exclusion list before it enters the sequence.'},
@@ -350,9 +452,9 @@ const content={
     priceTitle:'One-time packages. No subscription.',
     priceSub:'No setup fees. Revisions included. Delivered within 48–72 hours.',
     tiers:[
-      {name:'Essential',price:'$250',cadence:'one-time',pop:false,features:['Resume rewrite (1 version)','ATS keyword optimisation','LinkedIn headline + About','1 round of revisions','3-day turnaround'],cta:'Get started'},
-      {name:'Professional',price:'$450',cadence:'one-time',pop:true,features:['Resume rewrite (2 versions)','Gap analysis vs target role','Full LinkedIn profile rewrite','Cover letter template','2 rounds of revisions','5-day turnaround'],cta:'Book a strategy session'},
-      {name:'Executive',price:'$750',cadence:'one-time',pop:false,features:['Executive resume (3 versions)','Deep gap analysis + roadmap','Full LinkedIn overhaul','Content starter pack (5 posts)','Interview talking points','Unlimited revisions (14 days)','1:1 strategy call (45 min)'],cta:'Get started'}
+      {name:'Essential',price:'$250',cadence:'one-time',pop:false,features:['Resume rewrite (1 version)','ATS keyword optimisation','LinkedIn headline + About','1 round of revisions','3-day turnaround'],cta:'Order now',ctaLink:'#order-now'},
+      {name:'Professional',price:'$450',cadence:'one-time',pop:true,features:['Resume rewrite (2 versions)','Gap analysis vs target role','Full LinkedIn profile rewrite','Cover letter template','2 rounds of revisions','5-day turnaround'],cta:'Order now',ctaLink:'#order-now'},
+      {name:'Executive',price:'$750',cadence:'one-time',pop:false,features:['Executive resume (3 versions)','Deep gap analysis + roadmap','Full LinkedIn overhaul','Content starter pack (5 posts)','Interview talking points','Unlimited revisions (14 days)','1:1 strategy call (45 min)'],cta:'Book a strategy session',ctaLink:'https://calendly.com/zaydeenbecher0/30min'}
     ],
     faqs:[
       {q:'How does the process work?',a:'You fill in a short intake form, attach your current resume, and share the job descriptions you\'re targeting. We do the gap analysis and rewrite, then deliver your package within 48–72 hours. Two rounds of revisions are included on every package.'},
@@ -404,10 +506,119 @@ document.getElementById('steps-container').innerHTML=d.steps.map(st=>`<div class
 document.getElementById('output-body').innerHTML=d.outputs.map(o=>`<div class="output-post"><div class="post-label">${o.label}</div>${o.text.replace(/\n/g,'<br>')}<div class="output-time">${o.time||''}</div></div>`).join('');
 
 // Pricing
-document.getElementById('pricing-grid').innerHTML=d.tiers.map(t=>`<div class="price-card${t.pop?' pop':''}">${t.pop?'<div class="pop-badge">Most popular</div>':''}<div class="price-tier">${t.name}</div><div class="price-amount">${t.price}</div><div class="price-cadence">${t.cadence}</div><div class="price-divider"></div>${t.features.map(f=>`<div class="price-feature"><span class="pf-check">✓</span>${f}</div>`).join('')}<a href="https://calendly.com/zaydeenbecher0/30min" target="_blank" class="price-cta ${t.pop?'price-cta-main':'price-cta-outline'}">${t.cta}</a></div>`).join('');
+document.getElementById('pricing-grid').innerHTML=d.tiers.map(t=>{const link=t.ctaLink||'https://calendly.com/zaydeenbecher0/30min';const external=link.startsWith('http');return`<div class="price-card${t.pop?' pop':''}">${t.pop?'<div class="pop-badge">Most popular</div>':''}<div class="price-tier">${t.name}</div><div class="price-amount">${t.price}</div><div class="price-cadence">${t.cadence}</div><div class="price-divider"></div>${t.features.map(f=>`<div class="price-feature"><span class="pf-check">✓</span>${f}</div>`).join('')}<a href="${link}"${external?' target="_blank"':''} class="price-cta ${t.pop?'price-cta-main':'price-cta-outline'}">${t.cta}</a></div>`}).join('');
 
 // FAQ
 document.getElementById('faq-list').innerHTML=d.faqs.map((f,i)=>`<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">${f.q}<span class="faq-icon">+</span></div><div class="faq-a">${f.a}</div></div>`).join('');
+
+// Show correct form section
+if(s==='ghost')document.getElementById('free-sample').style.display='block';
+if(s==='outreach')document.getElementById('free-proposal').style.display='block';
+if(s==='resume')document.getElementById('order-now').style.display='block';
+
+// ── FREE SAMPLE POST (Ghost Desk) ──────────────────────────
+async function genSample(){
+  const name=document.getElementById('sn').value.trim();
+  const role=document.getElementById('sr').value.trim();
+  const email=document.getElementById('se').value.trim();
+  const topic=document.getElementById('st').value.trim();
+  const err=document.getElementById('samp-err');
+  err.style.display='none';
+  if(!name||!topic){err.textContent='Please add your name and topic.';err.style.display='block';return}
+  const btn=document.getElementById('samp-btn');
+  btn.disabled=true;btn.textContent='Generating your post...';
+  const apiKey=(JSON.parse(localStorage.getItem('gd_state')||'{}').apiKey)||'';
+  if(apiKey){
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`Write a single LinkedIn post for ${name}, ${role||'an executive'}. Their topic/story: "${topic}". Rules: 150-220 words, hook first line, 3-4 short paragraphs, end with a question. Professional thought leader tone. No hashtags. Output only the post.`}]})});
+      const data=await res.json();
+      if(data.error)throw new Error(data.error.message);
+      showSample(data.content[0].text,'Best time to post: Tuesday 7:30am');
+    }catch(e){showSample(buildSample(name,role,topic),'Best time to post: Tuesday 7:30am')}
+  }else{showSample(buildSample(name,role,topic),'Best time to post: Tuesday 7:30am')}
+  btn.disabled=false;btn.textContent='Generate my sample post →';
+}
+function buildSample(name,role,topic){
+  const hook=topic.length>60?topic.slice(0,topic.indexOf(' ',50)||60)+'..':topic;
+  return `${hook}\n\nMost people in my position would have looked the other way.\n\nI didn't.\n\nHere's what that taught me:\n\n→ The obvious answer is rarely the right one\n→ Speed matters less than direction\n→ The best decisions look wrong at first\n\nAfter ${role?'years as '+role:'years in this industry'}, I keep coming back to this.\n\nThe work doesn't get easier. But the judgment does.\n\nWhat's the counterintuitive lesson you'd pass on?\n\n— ${name}`;
+}
+function showSample(text,time){
+  document.getElementById('samp-empty-state').style.display='none';
+  document.getElementById('samp-result').style.display='block';
+  document.getElementById('samp-post').textContent=text;
+  document.getElementById('samp-time').textContent=time;
+  document.getElementById('samp-result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copySamp(){
+  navigator.clipboard.writeText(document.getElementById('samp-post').textContent);
+  event.target.textContent='Copied!';setTimeout(()=>event.target.textContent='Copy post',1500);
+}
+
+// ── FREE PROPOSAL (OutreachOS) ─────────────────────────────
+async function genProposal(){
+  const name=document.getElementById('pn').value.trim();
+  const company=document.getElementById('pc').value.trim();
+  const email=document.getElementById('pe').value.trim();
+  const icp=document.getElementById('pi').value.trim();
+  const pain=document.getElementById('pp').value.trim();
+  const budget=document.getElementById('pb').value;
+  const err=document.getElementById('prop-err');
+  err.style.display='none';
+  if(!name||!company||!icp){err.textContent='Please add your name, company, and ideal customer profile.';err.style.display='block';return}
+  const btn=document.getElementById('prop-btn');
+  btn.disabled=true;btn.textContent='Building your proposal...';
+  const apiKey=(JSON.parse(localStorage.getItem('gd_state')||'{}').apiKey)||'';
+  const prompt=`Write a short, professional OutreachOS proposal for ${name} at ${company}.\nICP: ${icp}\nChallenge: ${pain||'pipeline growth'}\nBudget: $${budget}/month\n\nFormat:\n1. Opening — one sentence acknowledging their specific situation\n2. What we'll deliver — bullet list of 4-5 specific deliverables for their ICP\n3. Projected results — estimated leads/month, expected reply rate (2-4%), meetings/month\n4. How it works — 3 steps, one line each\n5. Investment — $${budget}/month, what's included\n6. Next step — one clear action\n\nKeep it under 350 words. Professional, direct, no fluff.`;
+  if(apiKey){
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:prompt}]})});
+      const data=await res.json();
+      if(data.error)throw new Error(data.error.message);
+      showProposal(name,company,data.content[0].text,budget);
+    }catch(e){showProposal(name,company,buildProposal(name,company,icp,budget),budget)}
+  }else{showProposal(name,company,buildProposal(name,company,icp,budget),budget)}
+  btn.disabled=false;btn.textContent='Generate my proposal →';
+}
+function buildProposal(name,company,icp,budget){
+  const leads=budget==='800'?'100':budget==='1500'?'200':'400+';
+  const emails=budget==='800'?'3':'5';
+  return `Hi ${name},\n\nBased on what you've shared about ${company}, here's what an OutreachOS campaign would look like for you.\n\nWhat we'll deliver each month:\n• ${leads} qualified, verified leads matching your ICP: ${icp.slice(0,80)}\n• ${emails}-email personalised cold sequence — peer tone, ICP-specific pain points\n• Full reply handling — interested leads booked straight into your calendar\n• Monthly report: open rates, reply rates, meetings booked, and next-cycle recommendations\n\nProjected results:\n• ${leads} leads sourced and verified\n• 2–4% reply rate (industry average for well-targeted campaigns)\n• 4–8 qualified meetings per month at scale\n\nHow it works:\n1. Kickoff call — we nail down your ICP, exclusion list, and sending setup\n2. Campaign live within 5 business days\n3. You only touch warm, confirmed conversations\n\nInvestment: $${budget}/month\nNo setup fee. Cancel anytime with 30 days notice.\n\nNext step: Click the button below to book a 20-minute call and we'll map out your first campaign.`;
+}
+function showProposal(name,company,text,budget){
+  document.getElementById('prop-empty-state').style.display='none';
+  document.getElementById('prop-result').style.display='block';
+  document.getElementById('prop-title-label').textContent=`${company} — OutreachOS Proposal`;
+  document.getElementById('prop-body').textContent=text;
+  document.getElementById('prop-result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyProp(){
+  navigator.clipboard.writeText(document.getElementById('prop-body').textContent);
+  event.target.textContent='Copied!';setTimeout(()=>event.target.textContent='Copy proposal',1500);
+}
+function emailProp(){
+  const body=encodeURIComponent(document.getElementById('prop-body').textContent);
+  const email=document.getElementById('pe').value||'';
+  window.location.href=`mailto:${email}?subject=Your OutreachOS Proposal&body=${body}`;
+}
+
+// ── ORDER FORM (Resume/LinkedIn) ────────────────────────────
+function submitOrder(){
+  const name=document.getElementById('on').value.trim();
+  const email=document.getElementById('oe').value.trim();
+  const title=document.getElementById('ot').value.trim();
+  const goal=document.getElementById('og').value.trim();
+  const pkg=document.getElementById('op').value;
+  const notes=document.getElementById('oo').value.trim();
+  const err=document.getElementById('order-err');
+  err.style.display='none';
+  if(!name||!email||!title){err.textContent='Please add your name, email, and current job title.';err.style.display='block';return}
+  const subject=encodeURIComponent(`Resume & LinkedIn Order — ${name} — ${pkg}`);
+  const body=encodeURIComponent(`New order received:\n\nName: ${name}\nEmail: ${email}\nCurrent title: ${title}\nTarget role: ${goal||'Not specified'}\nPackage: ${pkg}\nNotes: ${notes||'None'}\n\nPlease send intake form to: ${email}`);
+  window.location.href=`mailto:zaydeenbecher0@gmail.com?subject=${subject}&body=${body}`;
+  document.getElementById('order-empty-state').style.display='none';
+  document.getElementById('order-confirm').style.display='block';
+  document.getElementById('order-confirm-msg').innerHTML=`Thanks ${name}! Your order for the <strong>${pkg}</strong> package has been received.<br><br>We'll send your intake form to <strong>${email}</strong> within 2 hours. Attach your current resume and the job descriptions you're targeting — we'll have your rewrite ready within 48 hours.`;
+}
 
 </script>
 </body>
