@@ -17,7 +17,27 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,9,10,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,9,10,.92);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.06);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center}
+.nav-link{padding:8px 16px;font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--muted);text-decoration:none;transition:color .25s;position:relative;cursor:pointer;white-space:nowrap;background:none;border:none;font-family:inherit;display:flex;align-items:center;gap:4px}
+.nav-link:hover{color:var(--text)}
+.nav-link::after{content:'';position:absolute;bottom:4px;left:16px;right:16px;height:1px;background:rgba(255,255,255,.25);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.nav-link:hover::after{transform:scaleX(1)}
+.drop-arrow{font-size:9px;opacity:.45;transition:transform .25s;margin-left:1px}
+.drop-wrap{position:relative}
+.drop-wrap:hover .drop-arrow{transform:rotate(180deg)}
+.drop-panel{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(-6px);background:rgba(11,12,16,.97);backdrop-filter:blur(28px) saturate(200%);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:6px;min-width:240px;opacity:0;visibility:hidden;transition:opacity .22s,transform .22s,visibility .22s;z-index:200;box-shadow:0 24px 48px rgba(0,0,0,.6)}
+.drop-wrap:hover .drop-panel{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.dp-i{display:flex;align-items:flex-start;gap:11px;padding:10px 11px;border-radius:10px;cursor:pointer;text-decoration:none;transition:background .15s;color:inherit}
+.dp-i:hover{background:rgba(255,255,255,.04)}
+.dp-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:1px}
+.dp-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;letter-spacing:.02em}
+.dp-sub{font-size:11px;color:var(--muted);line-height:1.45}
+.dp-divider{height:1px;background:rgba(255,255,255,.05);margin:5px 0}
+.dp-label{font-size:10px;letter-spacing:.1em;color:var(--subtle);text-transform:uppercase;padding:8px 11px 3px}
+.nav-cta{background:var(--accent);color:#fff;padding:9px 20px;border-radius:8px;font-size:12px;font-weight:500;text-decoration:none;letter-spacing:.04em;transition:opacity .2s,transform .15s;flex-shrink:0;white-space:nowrap}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
+@media(max-width:960px){.nav-links{display:none}.nav-cta{font-size:11px;padding:8px 14px}}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo-dot{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px}
 .nav-logo-text{font-size:14px;font-weight:600;color:var(--text)}
@@ -25,7 +45,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,9,10,.85);b
 .nav-cta:hover{opacity:.88}
 
 /* HERO */
-.hero{padding:140px 24px 80px;text-align:center;max-width:760px;margin:0 auto}
+.hero{padding:148px 24px 80px;text-align:center;max-width:760px;margin:0 auto}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid #3730a3;color:var(--accent-text);font-size:12px;padding:5px 12px;border-radius:20px;margin-bottom:24px}
 .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -132,7 +152,64 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
     <div class="nav-logo-dot" id="nav-dot">✦</div>
     <span class="nav-logo-text" id="nav-name">Hustle Agents</span>
   </div>
-  <a href="https://calendly.com/zaydeenbecher0/30min" target="_blank" class="nav-cta">Book a free strategy session</a>
+
+  <div class="nav-links">
+
+    <a class="nav-link" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Overview</a>
+    <a class="nav-link" href="#how">The Method</a>
+    <a class="nav-link" href="#pricing">Investment</a>
+
+    <!-- Our Work dropdown -->
+    <div class="drop-wrap">
+      <button class="nav-link">Our Work <span class="drop-arrow">▾</span></button>
+      <div class="drop-panel">
+        <div class="dp-label">Services</div>
+        <a class="dp-i" href="landing.html?s=ghost">
+          <div class="dp-icon" style="background:linear-gradient(135deg,#1a2e4a,#0f1e30)">✍️</div>
+          <div><div class="dp-title">Ghost Desk</div><div class="dp-sub">Executive content & personal brand</div></div>
+        </a>
+        <a class="dp-i" href="landing.html?s=outreach">
+          <div class="dp-icon" style="background:linear-gradient(135deg,#0d2e2b,#071e1c)">📧</div>
+          <div><div class="dp-title">OutreachOS</div><div class="dp-sub">B2B lead generation & pipeline</div></div>
+        </a>
+        <a class="dp-i" href="landing.html?s=resume">
+          <div class="dp-icon" style="background:linear-gradient(135deg,#22063f,#150328)">📄</div>
+          <div><div class="dp-title">Resume & LinkedIn</div><div class="dp-sub">Career positioning & rewrite</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- The Studio dropdown -->
+    <div class="drop-wrap">
+      <button class="nav-link">The Studio <span class="drop-arrow">▾</span></button>
+      <div class="drop-panel" style="min-width:220px">
+        <div class="dp-label">About</div>
+        <div class="dp-i">
+          <div>
+            <div class="dp-title">Our Philosophy</div>
+            <div class="dp-sub">We combine AI precision with human editorial judgment. Every deliverable is reviewed, refined, and held to a standard that automation alone can't reach.</div>
+          </div>
+        </div>
+        <div class="dp-i">
+          <div>
+            <div class="dp-title">Powered by Claude AI</div>
+            <div class="dp-sub">Enterprise-grade AI, boutique quality. We use the same model that powers Anthropic's most advanced products — at a fraction of the cost of a traditional agency.</div>
+          </div>
+        </div>
+        <div class="dp-divider"></div>
+        <div class="dp-label">Contact</div>
+        <a class="dp-i" href="mailto:zaydeenbecher0@gmail.com">
+          <div><div class="dp-title">Send an enquiry</div><div class="dp-sub">zaydeenbecher0@gmail.com · reply within 4 hours</div></div>
+        </a>
+        <a class="dp-i" href="https://www.linkedin.com/in/zaydeen-becher-276b8b352" target="_blank">
+          <div><div class="dp-title">LinkedIn</div><div class="dp-sub">Connect with Zaydeen Becher</div></div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="https://calendly.com/zaydeenbecher0/30min" target="_blank" class="nav-cta">Book a session →</a>
 </nav>
 
 <!-- HERO -->
