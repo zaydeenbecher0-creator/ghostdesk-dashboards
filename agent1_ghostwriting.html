@@ -115,17 +115,42 @@ tr:hover td{background:var(--surface2)}
 .flex-between{display:flex;align-items:center;justify-content:space-between}
 .gap-8{gap:8px}
 .copy-success{color:var(--green-text)!important;border-color:var(--green)!important}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;flex-shrink:0}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all .25s}
+.sidebar-close{display:none;background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;margin-left:auto;padding:4px 8px;line-height:1}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:98}
+@media(max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:260px;z-index:99;transform:translateX(-100%);transition:transform .25s ease}
+  .sidebar.open{transform:translateX(0)}
+  .overlay.open{display:block}
+  .hamburger{display:flex}
+  .sidebar-close{display:block}
+  .main{min-height:100vh}
+  .topbar{padding:10px 14px}
+  .topbar-left{flex:1;min-width:0}
+  .page-title{font-size:14px}
+  .page-sub{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+  .content{padding:12px}
+  .form-row,.form-row-3{grid-template-columns:1fr!important}
+  .stats-grid{grid-template-columns:1fr 1fr!important}
+  .post-grid{grid-template-columns:1fr!important}
+  .btn-sm{font-size:11px;padding:4px 8px}
+  select[style*="width:160px"]{width:130px!important}
+}
 </style>
 </head>
 <body>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 <div class="app">
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="logo">
     <div class="logo-icon">✍</div>
     <div>
       <div class="logo-text">Ghost Desk</div>
       <div class="logo-sub">LinkedIn & X Agent</div>
     </div>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
   </div>
   <nav class="nav">
     <div class="nav-label">Workspace</div>
@@ -157,6 +182,9 @@ tr:hover td{background:var(--surface2)}
 
 <main class="main">
   <div class="topbar">
+    <button class="hamburger" onclick="openSidebar()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
     <div class="topbar-left">
       <div>
         <div class="page-title" id="page-title">Content Studio</div>
@@ -804,6 +832,17 @@ function loadReportClient(id){}
 
 document.getElementById('cal-month').value=new Date().toISOString().slice(0,7);
 renderSidebar();
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('open')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open')}
+function fixMobileGrids(){
+  const m=window.innerWidth<=768;
+  document.querySelectorAll('.content [style*="grid-template-columns"]').forEach(el=>{
+    el.style.gridTemplateColumns=m?'1fr':'1fr 1fr';
+    el.style.display='grid';
+  });
+}
+window.addEventListener('resize',fixMobileGrids);
+fixMobileGrids();
 </script>
 </body>
 </html>
