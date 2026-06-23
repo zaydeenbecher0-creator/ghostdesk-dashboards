@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghost Desk — AI Ghostwriting Agent</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
+  --border:#2a2a2a;--border2:#333;
+  --text:#f0f0f0;--muted:#888;--subtle:#555;
+  --blue:#3b82f6;--blue-dim:#1e3a5f;--blue-text:#93c5fd;
+  --green:#22c55e;--green-dim:#14532d;--green-text:#86efac;
+  --amber:#f59e0b;--amber-dim:#451a03;--amber-text:#fcd34d;
+  --purple:#a855f7;--purple-dim:#3b0764;--purple-text:#d8b4fe;
+  --red:#ef4444;--red-dim:#450a0a;--red-text:#fca5a5;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column}
+.logo{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo-text{font-size:15px;font-weight:600;color:var(--text)}
+.logo-sub{font-size:11px;color:var(--muted)}
+.nav{padding:12px 8px;flex:1;overflow-y:auto}
+.nav-label{font-size:10px;color:var(--subtle);text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:16px 0 6px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:13px;transition:all .15s}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--blue-dim);color:var(--blue-text)}
+.nav-item .dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-left:auto}
+.client-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;transition:background .15s}
+.client-chip:hover{background:var(--surface2)}
+.client-chip.active{background:var(--surface3)}
+.avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.client-name{font-size:13px;color:var(--text)}
+.client-tier{font-size:11px;color:var(--muted)}
+.revenue-box{margin:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px}
+.rev-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.rev-value{font-size:22px;font-weight:700;color:var(--green)}
+.rev-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.main{display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.page-title{font-size:15px;font-weight:600}
+.page-sub{font-size:12px;color:var(--muted)}
+.btn{padding:7px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all .15s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:var(--red-dim);color:var(--red-text);border:1px solid var(--red)}
+.content{flex:1;overflow-y:auto;padding:20px}
+.section-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.tag-blue{background:var(--blue-dim);color:var(--blue-text)}
+.tag-green{background:var(--green-dim);color:var(--green-text)}
+.tag-amber{background:var(--amber-dim);color:var(--amber-text)}
+.tag-purple{background:var(--purple-dim);color:var(--purple-text)}
+.tag-red{background:var(--red-dim);color:var(--red-text)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.form-full{margin-bottom:12px}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+input,select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+textarea{resize:vertical;min-height:90px}
+select option{background:var(--surface2)}
+.output-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;min-height:100px}
+.output-box.loading{color:var(--muted);font-style:italic}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px}
+.stat-val{font-size:20px;font-weight:700;color:var(--text)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.post-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.post-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px}
+.post-platform{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--blue-text);margin-bottom:6px}
+.post-content{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:8px}
+.post-footer{display:flex;align-items:center;justify-content:space-between}
+.post-status{font-size:11px}
+.copy-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:11px;transition:all .15s}
+.copy-btn:hover{border-color:var(--blue);color:var(--blue-text)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tab{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab.active{color:var(--blue-text);border-bottom-color:var(--blue)}
+.tab:hover:not(.active){color:var(--text)}
+.voice-area{border:2px dashed var(--border2);border-radius:8px;padding:20px;text-align:center;color:var(--muted);cursor:pointer;transition:all .15s;margin-bottom:12px}
+.voice-area:hover{border-color:var(--blue);color:var(--blue-text)}
+.progress{background:var(--surface3);border-radius:4px;height:4px;overflow:hidden;margin:8px 0}
+.progress-bar{height:100%;background:var(--blue);border-radius:4px;transition:width .3s}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pipeline{display:flex;flex-direction:column;gap:8px}
+.pipe-step{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px}
+.pipe-num{width:22px;height:22px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--muted);flex-shrink:0}
+.pipe-step.done .pipe-num{background:var(--green-dim);color:var(--green-text)}
+.pipe-step.active .pipe-num{background:var(--blue-dim);color:var(--blue-text)}
+.pipe-text{font-size:13px;color:var(--text);flex:1}
+.pipe-tag{font-size:11px}
+.scroll-x{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.alert{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:12px;border-left:3px solid}
+.alert-blue{background:var(--blue-dim);color:var(--blue-text);border-color:var(--blue)}
+.alert-green{background:var(--green-dim);color:var(--green-text);border-color:var(--green)}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.flex{display:flex;align-items:center;gap:8px}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.gap-8{gap:8px}
+.copy-success{color:var(--green-text)!important;border-color:var(--green)!important}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✍</div>
+    <div>
+      <div class="logo-text">Ghost Desk</div>
+      <div class="logo-sub">LinkedIn & X Agent</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Workspace</div>
+    <div class="nav-item active" onclick="showPage('produce')">
+      <span>✦</span> Content Studio
+    </div>
+    <div class="nav-item" onclick="showPage('clients')">
+      <span>◈</span> Clients
+    </div>
+    <div class="nav-item" onclick="showPage('calendar')">
+      <span>⊡</span> Post Calendar
+    </div>
+    <div class="nav-item" onclick="showPage('reports')">
+      <span>⊞</span> Revenue & Reports
+    </div>
+    <div class="nav-item" onclick="showPage('setup')">
+      <span>⊙</span> Agent Setup
+      <div class="dot"></div>
+    </div>
+    <div class="nav-label" style="margin-top:20px">Active clients</div>
+    <div id="client-list"></div>
+  </nav>
+  <div class="revenue-box">
+    <div class="rev-label">Monthly recurring</div>
+    <div class="rev-value" id="sidebar-rev">$0</div>
+    <div class="rev-sub" id="sidebar-clients">0 active clients</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title" id="page-title">Content Studio</div>
+        <div class="page-sub" id="page-sub">Generate posts from voice or text input</div>
+      </div>
+    </div>
+    <div class="flex gap-8">
+      <select id="active-client-select" style="width:160px" onchange="switchClient(this.value)">
+        <option value="">Select client</option>
+      </select>
+      <button class="btn btn-primary" onclick="openNewClient()">+ Add client</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- CONTENT STUDIO PAGE -->
+    <div id="page-produce">
+      <div class="alert alert-blue">Agent is ready. Select a client, paste their voice memo or talking points, and run the full pipeline in one click.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Input</div>
+              <div class="flex gap-8">
+                <span class="tag tag-blue" id="input-client-tag">No client</span>
+              </div>
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchInputTab('voice',this)">Voice memo / text</div>
+              <div class="tab" onclick="switchInputTab('topics',this)">Topic list</div>
+              <div class="tab" onclick="switchInputTab('repurpose',this)">Repurpose post</div>
+            </div>
+            <div id="input-voice">
+              <div class="form-full">
+                <label>Paste voice memo transcript or raw talking points</label>
+                <textarea id="memo-input" placeholder="e.g. 'talked to a client today who was spending 40hrs a month on tasks I automated in 2 hours. wild. also had a meeting with the team about q3 roadmap, we're doubling down on ai tooling. feeling energised about the direction we're heading...'" style="min-height:140px"></textarea>
+              </div>
+            </div>
+            <div id="input-topics" style="display:none">
+              <div class="form-full">
+                <label>Topics or angles (one per line)</label>
+                <textarea id="topics-input" placeholder="Leadership lessons from 10 years in SaaS&#10;Why most AI implementations fail&#10;The counterintuitive way I think about hiring"></textarea>
+              </div>
+            </div>
+            <div id="input-repurpose" style="display:none">
+              <div class="form-full">
+                <label>Existing post to repurpose</label>
+                <textarea id="repurpose-input" placeholder="Paste the original post here..."></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Platform</label>
+                <select id="platform-select">
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="x">X (Twitter)</option>
+                  <option value="both">Both platforms</option>
+                </select>
+              </div>
+              <div>
+                <label>Post count</label>
+                <select id="post-count">
+                  <option value="1">1 post</option>
+                  <option value="3">3 posts</option>
+                  <option value="5" selected>5 posts</option>
+                  <option value="10">10 posts</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Tone</label>
+                <select id="tone-select">
+                  <option value="thought-leader">Thought leader</option>
+                  <option value="founder-story">Founder story</option>
+                  <option value="contrarian">Contrarian take</option>
+                  <option value="educational">Educational</option>
+                  <option value="personal">Personal & raw</option>
+                </select>
+              </div>
+              <div>
+                <label>Format</label>
+                <select id="format-select">
+                  <option value="hook-story-cta">Hook → story → CTA</option>
+                  <option value="list">Numbered list</option>
+                  <option value="question">Open with question</option>
+                  <option value="data">Data-led</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="runPipeline()" id="run-btn">
+              ✦ Run full pipeline
+            </button>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Pipeline</div>
+              <div id="pipe-status" class="tag tag-blue" style="display:none">Running</div>
+            </div>
+            <div class="pipeline" id="pipeline-steps">
+              <div class="pipe-step" id="pipe-1"><div class="pipe-num">1</div><div class="pipe-text">Extract key themes & insights</div><div class="pipe-tag"></div></div>
+              <div class="pipe-step" id="pipe-2"><div class="pipe-num">2</div><div class="pipe-text">Match client voice profile</div><div class="pipe-tag"></div></div>
+              <div class="pipe-step" id="pipe-3"><div class="pipe-num">3</div><div class="pipe-text">Draft platform-specific posts</div><div class="pipe-tag"></div></div>
+              <div class="pipe-step" id="pipe-4"><div class="pipe-num">4</div><div class="pipe-text">Add hooks & optimise for reach</div><div class="pipe-tag"></div></div>
+              <div class="pipe-step" id="pipe-5"><div class="pipe-num">5</div><div class="pipe-text">Suggest best posting times</div><div class="pipe-tag"></div></div>
+            </div>
+            <div class="divider"></div>
+            <div class="form-full">
+              <div class="flex-between" style="margin-bottom:8px">
+                <div class="card-title" style="font-size:13px">Generated posts</div>
+                <button class="btn btn-ghost btn-sm" onclick="copyAll()" id="copy-all-btn" style="display:none">Copy all</button>
+              </div>
+              <div id="posts-output" class="output-box" style="min-height:200px;font-size:12px">Posts will appear here after running the pipeline...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTS PAGE -->
+    <div id="page-clients" style="display:none">
+      <div class="flex-between" style="margin-bottom:16px">
+        <div class="section-title" style="margin:0">Client roster</div>
+        <button class="btn btn-primary btn-sm" onclick="openNewClient()">+ New client</button>
+      </div>
+      <div id="clients-table-wrap">
+        <div class="card">
+          <table>
+            <thead><tr>
+              <th>Client</th><th>Retainer</th><th>Posts/mo</th><th>Platform</th><th>Tone</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody id="clients-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- ADD CLIENT FORM -->
+      <div id="client-form" class="card" style="display:none;margin-top:16px">
+        <div class="card-header">
+          <div class="card-title">New client profile</div>
+          <button class="btn btn-ghost btn-sm" onclick="closeClientForm()">Cancel</button>
+        </div>
+        <div class="form-row">
+          <div><label>Full name</label><input id="cf-name" placeholder="e.g. Nia Masondo"></div>
+          <div><label>Company / Title</label><input id="cf-company" placeholder="e.g. CEO, Vantage Tech"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Monthly retainer (USD)</label><input id="cf-retainer" type="number" placeholder="1200" min="0"></div>
+          <div><label>Posts per month</label><input id="cf-posts" type="number" placeholder="15" min="1"></div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Platform</label>
+            <select id="cf-platform">
+              <option value="linkedin">LinkedIn</option>
+              <option value="x">X (Twitter)</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+          <div>
+            <label>Tone profile</label>
+            <select id="cf-tone">
+              <option value="thought-leader">Thought leader</option>
+              <option value="founder-story">Founder story</option>
+              <option value="contrarian">Contrarian take</option>
+              <option value="educational">Educational</option>
+              <option value="personal">Personal & raw</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full">
+          <label>Voice profile / writing style notes</label>
+          <textarea id="cf-voice" placeholder="Describe how this client speaks, their favourite phrases, topics they care about, things to avoid, audience they write for..."></textarea>
+        </div>
+        <div class="form-full">
+          <label>Sample posts (paste 2–3 of their existing posts for voice calibration)</label>
+          <textarea id="cf-samples" style="min-height:120px" placeholder="Paste real posts here. The agent will learn their style from these."></textarea>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Start date</label>
+            <input id="cf-start" type="date">
+          </div>
+          <div>
+            <label>Invoice day (day of month)</label>
+            <input id="cf-invoice" type="number" placeholder="1" min="1" max="28">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveClient()">Save client</button>
+      </div>
+    </div>
+
+    <!-- CALENDAR PAGE -->
+    <div id="page-calendar" style="display:none">
+      <div class="alert alert-blue">Select a client and generate their full month of scheduled posts in one run.</div>
+      <div class="form-row" style="margin-bottom:16px">
+        <div>
+          <label>Client</label>
+          <select id="cal-client-sel" onchange="calClientChanged(this.value)"></select>
+        </div>
+        <div>
+          <label>Month</label>
+          <input id="cal-month" type="month">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin-bottom:16px" onclick="genCalendar()" id="cal-btn">Generate monthly schedule</button>
+      <div id="cal-output" class="card" style="display:none">
+        <div class="card-header">
+          <div class="card-title" id="cal-title">Monthly schedule</div>
+          <button class="btn btn-ghost btn-sm" onclick="copyCalendar()">Copy schedule</button>
+        </div>
+        <div id="cal-content" class="output-box" style="min-height:300px;font-size:12px"></div>
+      </div>
+    </div>
+
+    <!-- REPORTS PAGE -->
+    <div id="page-reports" style="display:none">
+      <div class="stats-grid" id="report-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Revenue breakdown</div></div>
+          <table>
+            <thead><tr><th>Client</th><th>Retainer</th><th>Posts/mo</th><th>Status</th></tr></thead>
+            <tbody id="rev-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Monthly client report</div>
+            <select id="report-client-sel" style="width:140px" onchange="loadReportClient(this.value)"></select>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="genReport()" style="margin-bottom:12px">Generate report</button>
+          <div id="report-output" class="output-box" style="min-height:200px;font-size:12px">Select a client and generate their monthly performance report...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETUP PAGE -->
+    <div id="page-setup" style="display:none">
+      <div class="alert alert-green">Set your API key once. Everything else is automated from there.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">API configuration</div></div>
+          <div class="form-full">
+            <label>Anthropic API key</label>
+            <input id="api-key-input" type="password" placeholder="sk-ant-..." value="">
+          </div>
+          <div class="form-full">
+            <label>Your ghostwriting business name</label>
+            <input id="biz-name-input" placeholder="e.g. Pencraft Studios">
+          </div>
+          <div class="form-full">
+            <label>Your revenue target (monthly, USD)</label>
+            <input id="rev-target-input" type="number" placeholder="5000">
+          </div>
+          <div class="form-full">
+            <label>Default post style / house rules</label>
+            <textarea id="house-rules-input" placeholder="e.g. Always end LinkedIn posts with a question to drive comments. Never use corporate jargon. Keep paragraphs to 2 sentences max..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="saveSetup()">Save settings</button>
+          <div id="setup-msg" style="margin-top:8px;font-size:12px;color:var(--green-text);display:none">Settings saved.</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">How to use this agent</div></div>
+          <div class="pipeline">
+            <div class="pipe-step done"><div class="pipe-num">1</div><div class="pipe-text">Enter your API key and business name above</div></div>
+            <div class="pipe-step"><div class="pipe-num">2</div><div class="pipe-text">Add each client under the Clients tab with their voice profile & sample posts</div></div>
+            <div class="pipe-step"><div class="pipe-num">3</div><div class="pipe-text">Each week: client sends you a 2-min voice note → you paste the transcript into Content Studio</div></div>
+            <div class="pipe-step"><div class="pipe-num">4</div><div class="pipe-text">Run pipeline → get 5–10 ready-to-post pieces in under 60 seconds</div></div>
+            <div class="pipe-step"><div class="pipe-num">5</div><div class="pipe-text">Review → copy to Buffer / Hootsuite / post directly</div></div>
+            <div class="pipe-step"><div class="pipe-num">6</div><div class="pipe-text">Monthly: generate client report → send with invoice</div></div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.8">
+            <strong style="color:var(--text)">Revenue formula:</strong><br>
+            4 clients × $1,250/mo = $5,000/mo<br>
+            3 months = $15,000 minimum
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+let state={clients:[],apiKey:'',bizName:'Ghost Desk',revTarget:5000,houseRules:'',inputTab:'voice',currentPage:'produce',selectedClientId:null};
+
+function save(){localStorage.setItem('gd_state',JSON.stringify(state))}
+function load(){try{const s=localStorage.getItem('gd_state');if(s){const p=JSON.parse(s);Object.assign(state,p)}}catch(e){}}
+
+load();
+if(!state.clients)state.clients=[];
+
+function renderSidebar(){
+  const total=state.clients.filter(c=>c.status==='active').reduce((a,c)=>a+(parseFloat(c.retainer)||0),0);
+  document.getElementById('sidebar-rev').textContent='$'+total.toLocaleString();
+  const count=state.clients.filter(c=>c.status==='active').length;
+  document.getElementById('sidebar-clients').textContent=count+' active client'+(count!==1?'s':'');
+  const list=document.getElementById('client-list');
+  list.innerHTML='';
+  state.clients.forEach(c=>{
+    const colors=['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444','#06b6d4'];
+    const idx=state.clients.indexOf(c)%colors.length;
+    list.innerHTML+=`<div class="client-chip ${state.selectedClientId===c.id?'active':''}" onclick="selectClient('${c.id}')">
+      <div class="avatar" style="background:${colors[idx]}22;color:${colors[idx]}">${c.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+      <div><div class="client-name">${c.name}</div><div class="client-tier">$${parseFloat(c.retainer||0).toLocaleString()}/mo</div></div>
+    </div>`;
+  });
+  const sel1=document.getElementById('active-client-select');
+  const sel2=document.getElementById('cal-client-sel');
+  const sel3=document.getElementById('report-client-sel');
+  [sel1,sel2,sel3].forEach(sel=>{
+    if(!sel)return;
+    const v=sel.value;
+    sel.innerHTML='<option value="">Select client</option>';
+    state.clients.forEach(c=>{sel.innerHTML+=`<option value="${c.id}" ${c.id===v?'selected':''}>${c.name}</option>`});
+  });
+}
+
+function renderClientsTable(){
+  const tb=document.getElementById('clients-tbody');
+  if(!tb)return;
+  if(!state.clients.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">No clients yet. Add your first client to start.</td></tr>';return}
+  tb.innerHTML=state.clients.map((c,i)=>`<tr>
+    <td><div style="font-weight:500">${c.name}</div><div style="font-size:11px;color:var(--muted)">${c.company||''}</div></td>
+    <td style="color:var(--green-text)">$${parseFloat(c.retainer||0).toLocaleString()}/mo</td>
+    <td>${c.posts||15}</td>
+    <td><span class="tag tag-blue">${c.platform||'LinkedIn'}</span></td>
+    <td><span class="tag tag-purple">${c.tone||'thought-leader'}</span></td>
+    <td><span class="tag ${c.status==='active'?'tag-green':'tag-amber'}">${c.status||'active'}</span></td>
+    <td><button class="copy-btn" style="color:var(--red-text);border-color:var(--red)" onclick="removeClient('${c.id}')">Remove</button></td>
+  </tr>`).join('');
+}
+
+function renderReports(){
+  const active=state.clients.filter(c=>c.status==='active');
+  const total=active.reduce((a,c)=>a+(parseFloat(c.retainer)||0),0);
+  const target=state.revTarget||5000;
+  const pct=Math.min(100,Math.round(total/target*100));
+  const stats=document.getElementById('report-stats');
+  if(stats)stats.innerHTML=`
+    <div class="stat-card"><div class="stat-val" style="color:var(--green-text)">$${total.toLocaleString()}</div><div class="stat-lbl">MRR</div></div>
+    <div class="stat-card"><div class="stat-val">${active.length}</div><div class="stat-lbl">Active clients</div></div>
+    <div class="stat-card"><div class="stat-val">${pct}%</div><div class="stat-lbl">Of $${target.toLocaleString()} target</div></div>
+    <div class="stat-card"><div class="stat-val">$${Math.max(0,target-total).toLocaleString()}</div><div class="stat-lbl">Gap to target</div></div>
+  `;
+  const rb=document.getElementById('rev-tbody');
+  if(rb)rb.innerHTML=active.length?active.map(c=>`<tr>
+    <td>${c.name}</td>
+    <td style="color:var(--green-text)">$${parseFloat(c.retainer||0).toLocaleString()}</td>
+    <td>${c.posts||15}</td>
+    <td><span class="tag tag-green">Active</span></td>
+  </tr>`).join(''):'<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:16px">No active clients</td></tr>';
+}
+
+function showPage(p){
+  ['produce','clients','calendar','reports','setup'].forEach(n=>{
+    const el=document.getElementById('page-'+n);
+    if(el)el.style.display=n===p?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach((el,i)=>{
+    el.classList.toggle('active',el.getAttribute('onclick')===`showPage('${p}')`);
+  });
+  state.currentPage=p;
+  const titles={produce:'Content Studio',clients:'Clients',calendar:'Post Calendar',reports:'Revenue & Reports',setup:'Agent Setup'};
+  const subs={produce:'Generate posts from voice or text input',clients:'Manage your ghostwriting clients',calendar:'Build a full month of posts for any client',reports:'Track revenue and send client reports',setup:'Configure your agent settings'};
+  document.getElementById('page-title').textContent=titles[p];
+  document.getElementById('page-sub').textContent=subs[p];
+  if(p==='clients')renderClientsTable();
+  if(p==='reports')renderReports();
+  if(p==='setup'){
+    document.getElementById('api-key-input').value=state.apiKey||'';
+    document.getElementById('biz-name-input').value=state.bizName||'';
+    document.getElementById('rev-target-input').value=state.revTarget||5000;
+    document.getElementById('house-rules-input').value=state.houseRules||'';
+  }
+}
+
+function switchInputTab(tab,el){
+  state.inputTab=tab;
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['voice','topics','repurpose'].forEach(t=>{
+    document.getElementById('input-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+function selectClient(id){
+  state.selectedClientId=id;
+  const c=state.clients.find(x=>x.id===id);
+  if(c){
+    document.getElementById('active-client-select').value=id;
+    document.getElementById('input-client-tag').textContent=c.name;
+  }
+  renderSidebar();
+  save();
+}
+
+function switchClient(id){
+  state.selectedClientId=id||null;
+  const c=state.clients.find(x=>x.id===id);
+  document.getElementById('input-client-tag').textContent=c?c.name:'No client';
+  renderSidebar();
+  save();
+}
+
+function openNewClient(){
+  showPage('clients');
+  document.getElementById('client-form').style.display='block';
+  document.getElementById('cf-start').value=new Date().toISOString().split('T')[0];
+}
+function closeClientForm(){document.getElementById('client-form').style.display='none'}
+
+function saveClient(){
+  const n=document.getElementById('cf-name').value.trim();
+  if(!n){alert('Enter client name');return}
+  const c={
+    id:'c'+Date.now(),name:n,company:document.getElementById('cf-company').value.trim(),
+    retainer:document.getElementById('cf-retainer').value||'1200',
+    posts:document.getElementById('cf-posts').value||'15',
+    platform:document.getElementById('cf-platform').value,
+    tone:document.getElementById('cf-tone').value,
+    voice:document.getElementById('cf-voice').value,
+    samples:document.getElementById('cf-samples').value,
+    start:document.getElementById('cf-start').value,
+    invoice:document.getElementById('cf-invoice').value||'1',
+    status:'active'
+  };
+  state.clients.push(c);
+  save();
+  closeClientForm();
+  renderSidebar();
+  renderClientsTable();
+  ['cf-name','cf-company','cf-retainer','cf-posts','cf-voice','cf-samples'].forEach(id=>document.getElementById(id).value='');
+}
+
+function removeClient(id){
+  if(!confirm('Remove this client?'))return;
+  state.clients=state.clients.filter(c=>c.id!==id);
+  if(state.selectedClientId===id)state.selectedClientId=null;
+  save();renderSidebar();renderClientsTable();
+}
+
+function saveSetup(){
+  state.apiKey=document.getElementById('api-key-input').value.trim();
+  state.bizName=document.getElementById('biz-name-input').value.trim()||'Ghost Desk';
+  state.revTarget=parseFloat(document.getElementById('rev-target-input').value)||5000;
+  state.houseRules=document.getElementById('house-rules-input').value.trim();
+  save();
+  document.getElementById('setup-msg').style.display='block';
+  setTimeout(()=>document.getElementById('setup-msg').style.display='none',2000);
+  renderSidebar();
+}
+
+function getApiKey(){return state.apiKey||'';}
+
+function setPipeStep(n,status){
+  const el=document.getElementById('pipe-'+n);
+  if(!el)return;
+  el.classList.remove('done','active');
+  if(status==='done')el.classList.add('done');
+  if(status==='active')el.classList.add('active');
+  const tag=el.querySelector('.pipe-tag');
+  if(tag)tag.innerHTML=status==='done'?'<span class="tag tag-green" style="font-size:10px">✓</span>':status==='active'?'<span class="spinner"></span>':'';
+}
+
+async function runPipeline(){
+  const key=getApiKey();
+  if(!key){alert('Add your API key in Agent Setup first.');showPage('setup');return}
+  const client=state.selectedClientId?state.clients.find(c=>c.id===state.selectedClientId):null;
+  let input='';
+  if(state.inputTab==='voice')input=document.getElementById('memo-input').value.trim();
+  else if(state.inputTab==='topics')input=document.getElementById('topics-input').value.trim();
+  else input=document.getElementById('repurpose-input').value.trim();
+  if(!input){alert('Add some input content first.');return}
+  const platform=document.getElementById('platform-select').value;
+  const count=document.getElementById('post-count').value;
+  const tone=document.getElementById('tone-select').value;
+  const format=document.getElementById('format-select').value;
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Running...';
+  document.getElementById('pipe-status').style.display='inline-flex';
+  document.getElementById('posts-output').className='output-box loading';
+  document.getElementById('posts-output').textContent='Agent is working...';
+  document.getElementById('copy-all-btn').style.display='none';
+  [1,2,3,4,5].forEach(n=>setPipeStep(n,''));
+  const steps=[
+    {n:1,label:'Extracting themes'},
+    {n:2,label:'Calibrating voice'},
+    {n:3,label:'Drafting posts'},
+    {n:4,label:'Optimising hooks'},
+    {n:5,label:'Scheduling times'}
+  ];
+  for(let i=0;i<steps.length;i++){
+    setPipeStep(steps[i].n,'active');
+    if(i>0)setPipeStep(steps[i-1].n,'done');
+    await new Promise(r=>setTimeout(r,600));
+  }
+  const voiceProfile=client?`\nCLIENT VOICE PROFILE:\nName: ${client.name}\nCompany: ${client.company||'N/A'}\nTone: ${client.tone}\nVoice notes: ${client.voice||'Not specified'}\nSample posts:\n${client.samples||'Not provided'}\n`:'';
+  const houseRules=state.houseRules?`\nHOUSE RULES:\n${state.houseRules}`:'';
+  const prompt=`You are a world-class social media ghostwriter for busy executives. Your job is to transform raw input into polished, high-engagement posts.
+${voiceProfile}${houseRules}
+INPUT TYPE: ${state.inputTab==='voice'?'Voice memo transcript / talking points':state.inputTab==='topics'?'Topic list':'Post to repurpose'}
+RAW INPUT:
+${input}
+
+TASK: Generate exactly ${count} ready-to-post ${platform==='both'?'LinkedIn and X (Twitter)':platform} post${count>1?'s':''}.
+TONE: ${tone}
+FORMAT: ${format}
+${platform==='both'?'Label each post clearly with [LINKEDIN] or [X].':`All posts for ${platform}.`}
+
+RULES:
+- Extract the most shareable, insightful moments from the input
+- LinkedIn: 150–300 words, no hashtag spam (max 3), end with a question
+- X: max 280 chars per tweet, or up to 5-tweet thread if needed (label as 1/5 etc.)
+- Every post needs a killer opening line (hook) that stops the scroll
+- Match the specified tone and format precisely
+- If client voice profile provided, write EXACTLY as that person would speak
+- Add a [BEST TIME TO POST] suggestion after each post (e.g. Tue 8am, Thu 12pm)
+- Separate each post with ---
+
+Output ONLY the posts. No preamble. No explanations.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    if(data.error){throw new Error(data.error.message)}
+    const text=data.content[0].text;
+    document.getElementById('posts-output').className='output-box';
+    document.getElementById('posts-output').textContent=text;
+    document.getElementById('copy-all-btn').style.display='inline-flex';
+    [1,2,3,4,5].forEach(n=>setPipeStep(n,'done'));
+    document.getElementById('pipe-status').style.display='none';
+  }catch(e){
+    document.getElementById('posts-output').className='output-box';
+    document.getElementById('posts-output').textContent='Error: '+e.message+'\n\nCheck your API key in Agent Setup.';
+    [1,2,3,4,5].forEach(n=>setPipeStep(n,''));
+    document.getElementById('pipe-status').style.display='none';
+  }
+  btn.disabled=false;btn.innerHTML='✦ Run full pipeline';
+}
+
+function copyAll(){
+  const text=document.getElementById('posts-output').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-all-btn');
+    btn.textContent='Copied!';btn.classList.add('copy-success');
+    setTimeout(()=>{btn.textContent='Copy all';btn.classList.remove('copy-success')},1500);
+  });
+}
+
+async function genCalendar(){
+  const key=getApiKey();
+  if(!key){alert('Add API key in Setup first');return}
+  const cid=document.getElementById('cal-client-sel').value;
+  const month=document.getElementById('cal-month').value;
+  if(!cid){alert('Select a client');return}
+  if(!month){alert('Select a month');return}
+  const c=state.clients.find(x=>x.id===cid);
+  const btn=document.getElementById('cal-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Generating...';
+  const prompt=`Create a detailed monthly content calendar for ${c.name} (${c.company||'executive'}) for ${month}.
+Client tone: ${c.tone}. Platform: ${c.platform||'LinkedIn'}. Posts per month target: ${c.posts||15}.
+Voice notes: ${c.voice||'Professional executive voice'}.
+Topics to cover: Leadership, industry insights, personal stories, lessons learned, contrarian takes, behind-the-scenes.
+
+Format each entry as:
+WEEK X — [DATE RANGE]
+Day, Date | Platform | Topic | Hook (first line) | Content angle | Best time
+
+Make it specific, varied, and ready to execute. Include a mix of personal stories, thought leadership, educational content, and engagement posts.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    document.getElementById('cal-title').textContent=c.name+' — '+month;
+    document.getElementById('cal-content').textContent=data.content[0].text;
+    document.getElementById('cal-output').style.display='block';
+  }catch(e){
+    document.getElementById('cal-content').textContent='Error: '+e.message;
+    document.getElementById('cal-output').style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Generate monthly schedule';
+}
+
+function copyCalendar(){
+  navigator.clipboard.writeText(document.getElementById('cal-content').textContent);
+}
+
+function calClientChanged(id){
+  const c=state.clients.find(x=>x.id===id);
+}
+
+async function genReport(){
+  const key=getApiKey();
+  if(!key){alert('Add API key in Setup first');return}
+  const cid=document.getElementById('report-client-sel').value;
+  if(!cid){alert('Select a client');return}
+  const c=state.clients.find(x=>x.id===cid);
+  document.getElementById('report-output').className='output-box loading';
+  document.getElementById('report-output').textContent='Generating report...';
+  const prompt=`Write a professional monthly performance report for a ghostwriting client.
+Client: ${c.name}, ${c.company||''}
+Retainer: $${c.retainer}/mo
+Platform: ${c.platform||'LinkedIn'}
+Posts delivered: ${c.posts||15}
+Tone: ${c.tone}
+
+The report should:
+1. Open with a brief executive summary of the month
+2. List content categories covered and rationale
+3. Note engagement best practices applied
+4. Suggest 2-3 content angles for next month
+5. Include a professional closing with invoice reminder ($${c.retainer} due on day ${c.invoice||1})
+
+Keep it concise, professional, and client-friendly. This goes straight to the client.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    document.getElementById('report-output').className='output-box';
+    document.getElementById('report-output').textContent=data.content[0].text;
+  }catch(e){
+    document.getElementById('report-output').className='output-box';
+    document.getElementById('report-output').textContent='Error: '+e.message;
+  }
+}
+
+function loadReportClient(id){}
+
+document.getElementById('cal-month').value=new Date().toISOString().slice(0,7);
+renderSidebar();
+</script>
+</body>
+</html>

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding Hub — Client Welcome & Intake Generator</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
+  --border:#2a2a2a;--border2:#333;
+  --text:#f0f0f0;--muted:#888;--subtle:#555;
+  --indigo:#6366f1;--indigo-dim:#1e1b4b;--indigo-text:#a5b4fc;
+  --teal:#14b8a6;--teal-dim:#134e4a;--teal-text:#5eead4;
+  --amber:#f59e0b;--amber-dim:#451a03;--amber-text:#fcd34d;
+  --green:#22c55e;--green-dim:#14532d;--green-text:#86efac;
+  --red:#ef4444;--red-dim:#450a0a;--red-text:#fca5a5;
+  --blue:#3b82f6;--blue-dim:#1e3a5f;--blue-text:#93c5fd;
+  --purple:#a855f7;--purple-dim:#3b0764;--purple-text:#d8b4fe;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.logo{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--indigo);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo-text{font-size:15px;font-weight:600;color:var(--text)}
+.logo-sub{font-size:11px;color:var(--muted)}
+.nav{padding:12px 8px;flex:1;overflow-y:auto}
+.nav-label{font-size:10px;color:var(--subtle);text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:16px 0 6px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:13px;transition:all .15s}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--indigo-dim);color:var(--indigo-text)}
+.client-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:2px 0;border-radius:6px;cursor:pointer;transition:background .15s}
+.client-chip:hover{background:var(--surface2)}
+.client-chip.active{background:var(--surface3)}
+.avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.client-name{font-size:12px;color:var(--text)}
+.client-stage{font-size:10px;color:var(--muted)}
+.progress-box{margin:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px}
+.pb-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.pb-bar{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.pb-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .3s}
+.pb-text{font-size:11px;color:var(--muted)}
+.main{display:flex;flex-direction:column}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.page-title{font-size:15px;font-weight:600}
+.page-sub{font-size:12px;color:var(--muted)}
+.btn{padding:7px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all .15s}
+.btn-primary{background:var(--indigo);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.content{flex:1;overflow-y:auto;padding:20px}
+.section-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.tag-indigo{background:var(--indigo-dim);color:var(--indigo-text)}
+.tag-teal{background:var(--teal-dim);color:var(--teal-text)}
+.tag-amber{background:var(--amber-dim);color:var(--amber-text)}
+.tag-green{background:var(--green-dim);color:var(--green-text)}
+.tag-red{background:var(--red-dim);color:var(--red-text)}
+.tag-blue{background:var(--blue-dim);color:var(--blue-text)}
+.tag-purple{background:var(--purple-dim);color:var(--purple-text)}
+.tag-pink{background:#3b0764;color:#f0abfc}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.form-full{margin-bottom:12px}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+input,select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--indigo)}
+textarea{resize:vertical;min-height:80px}
+select option{background:var(--surface2)}
+.output-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;min-height:80px}
+.output-box.loading{color:var(--muted);font-style:italic}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap}
+.tab.active{color:var(--indigo-text);border-bottom-color:var(--indigo)}
+.tab:hover:not(.active){color:var(--text)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--indigo);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.alert{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:12px;border-left:3px solid}
+.alert-indigo{background:var(--indigo-dim);color:var(--indigo-text);border-color:var(--indigo)}
+.alert-amber{background:var(--amber-dim);color:var(--amber-text);border-color:var(--amber)}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.flex{display:flex;align-items:center;gap:8px}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.copy-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:11px;transition:all .15s}
+.copy-btn:hover{border-color:var(--indigo);color:var(--indigo-text)}
+.copy-success{color:var(--green-text)!important;border-color:var(--green)!important}
+.checklist{display:flex;flex-direction:column;gap:6px}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s}
+.check-item:hover{border-color:var(--border2)}
+.check-item.done{opacity:.6}
+.checkbox{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.checkbox.checked{background:var(--teal);border-color:var(--teal)}
+.check-text{font-size:13px;flex:1}
+.check-text.done{text-decoration:line-through;color:var(--muted)}
+.check-meta{font-size:11px;color:var(--muted)}
+.stage-pills{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.stage-pill{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border2);color:var(--muted)}
+.stage-pill.active{background:var(--indigo-dim);color:var(--indigo-text);border-color:var(--indigo)}
+.stage-pill.complete{background:var(--teal-dim);color:var(--teal-text);border-color:var(--teal)}
+.doc-meta{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .ti{font-size:32px;margin-bottom:12px;display:block;color:var(--subtle)}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⊕</div>
+    <div>
+      <div class="logo-text">Onboarding Hub</div>
+      <div class="logo-sub">Welcome · Intake · Contract</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Workspace</div>
+    <div class="nav-item active" onclick="showPage('generate')"><span>✦</span> Generate Package</div>
+    <div class="nav-item" onclick="showPage('clients')"><span>◈</span> All Clients</div>
+    <div class="nav-item" onclick="showPage('tracker')"><span>☑</span> Onboarding Tracker</div>
+    <div class="nav-item" onclick="showPage('notion')"><span>◆</span> Notion Sync</div>
+    <div class="nav-item" onclick="showPage('setup')"><span>⊙</span> Setup<div class="dot" id="setup-dot" style="display:none;width:6px;height:6px;border-radius:50%;background:#f59e0b;margin-left:auto"></div></div>
+    <div class="nav-label" style="margin-top:20px">Clients</div>
+    <div id="client-list"></div>
+  </nav>
+  <div class="progress-box">
+    <div class="pb-label">Onboarding pipeline</div>
+    <div class="pb-bar"><div class="pb-fill" id="pipeline-fill" style="width:0%"></div></div>
+    <div class="pb-text" id="pipeline-text">0 clients fully onboarded</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="page-title">Generate Package</div>
+      <div class="page-sub" id="page-sub">Welcome email, intake form, contract, and checklist — one click</div>
+    </div>
+    <div class="flex">
+      <select id="active-client-sel" style="width:170px" onchange="switchClient(this.value)"><option value="">Select client</option></select>
+      <button class="btn btn-primary" onclick="openNewClient()">+ New client</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- GENERATE PAGE -->
+    <div id="page-generate">
+      <div class="alert alert-indigo">Fill in the client brief once, then generate all four onboarding documents together. Each one is tailored to whichever business this client belongs to.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Client brief</div><span class="tag tag-indigo" id="gen-client-tag">No client selected</span></div>
+
+          <div class="form-row">
+            <div><label>Business</label>
+              <select id="g-business">
+                <option value="ghost">Ghost Desk (ghostwriting)</option>
+                <option value="email">OutreachOS (cold email)</option>
+                <option value="resume">Resume/LinkedIn</option>
+              </select>
+            </div>
+            <div><label>Client / company name</label><input id="g-name" placeholder="e.g. Vantage Growth Co."></div>
+          </div>
+          <div class="form-row">
+            <div><label>Primary contact name</label><input id="g-contact" placeholder="e.g. Remi Okafor"></div>
+            <div><label>Contact title</label><input id="g-title" placeholder="e.g. CEO / CMO"></div>
+          </div>
+          <div class="form-row">
+            <div><label>Contact email</label><input id="g-email" type="email" placeholder="remi@vantage.co"></div>
+            <div><label>Monthly retainer (USD)</label><input id="g-retainer" type="number" placeholder="1250"></div>
+          </div>
+          <div class="form-row">
+            <div><label>Start date</label><input id="g-start" type="date"></div>
+            <div><label>Engagement length</label>
+              <select id="g-term">
+                <option value="month-to-month">Month-to-month</option>
+                <option value="3-month">3-month minimum</option>
+                <option value="6-month">6-month minimum</option>
+                <option value="12-month">12-month</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-full">
+            <label>Scope of work (what you're delivering — be specific)</label>
+            <textarea id="g-scope" placeholder="e.g. 15 LinkedIn posts/month, voice-calibrated to client, posted on their behalf or delivered ready-to-post. Includes monthly content calendar and performance report." style="min-height:80px"></textarea>
+          </div>
+          <div class="form-full">
+            <label>Anything specific to mention in the welcome email? (optional)</label>
+            <textarea id="g-notes" placeholder="e.g. They mentioned wanting to focus on thought leadership around AI in logistics..." style="min-height:60px"></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="generatePackage()" id="gen-btn">⊕ Generate full onboarding package</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Output</div><div id="gen-status" class="tag tag-amber" style="display:none">Generating</div></div>
+          <div class="tabs" id="output-tabs" style="display:none">
+            <div class="tab active" onclick="switchOutputTab('welcome',this)">Welcome email</div>
+            <div class="tab" onclick="switchOutputTab('intake',this)">Intake form</div>
+            <div class="tab" onclick="switchOutputTab('contract',this)">Contract / SOW</div>
+            <div class="tab" onclick="switchOutputTab('checklist',this)">Checklist</div>
+          </div>
+          <div id="output-empty" class="empty-state">
+            <i class="ti" style="font-size:32px">⊕</i>
+            <div>Fill in the brief and generate — all four documents will appear here, ready to copy.</div>
+          </div>
+          <div id="output-content" style="display:none">
+            <div class="output-box" id="output-box" style="font-size:12px;max-height:480px;overflow-y:auto"></div>
+            <div class="flex" style="margin-top:10px;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="copyOutput()">Copy this document</button>
+              <button class="btn btn-ghost btn-sm" onclick="copyAllOutputs()">Copy all four</button>
+              <button class="btn btn-primary btn-sm" onclick="saveAsClient()" id="save-client-btn">Save client & start tracker</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTS PAGE -->
+    <div id="page-clients" style="display:none">
+      <div class="flex-between" style="margin-bottom:16px">
+        <div class="section-title" style="margin:0">All onboarded clients</div>
+        <button class="btn btn-primary btn-sm" onclick="showPage('generate')">+ Onboard new client</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Client</th><th>Business</th><th>Retainer</th><th>Stage</th><th>Started</th><th></th></tr></thead>
+          <tbody id="clients-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TRACKER PAGE -->
+    <div id="page-tracker" style="display:none">
+      <div class="alert alert-indigo">Track each client through onboarding. Check items off as you complete them — the sidebar progress bar updates automatically.</div>
+      <div id="tracker-content"></div>
+    </div>
+
+    <!-- NOTION SYNC PAGE -->
+    <div id="page-notion" style="display:none">
+      <div class="alert alert-indigo">This tool can't connect to Notion directly from your browser — Notion requires real authentication. Instead, generate a sync packet here, then paste it to Claude in your chat and ask it to sync. Claude has a live Notion connection and will create or update the client record and push the documents in.</div>
+
+      <div class="form-row" style="margin-bottom:16px">
+        <div><label>Client to sync</label>
+          <select id="notion-client-sel" onchange="loadNotionPreview(this.value)"><option value="">Select client</option></select>
+        </div>
+        <div><label>Notion Status (sales stage)</label>
+          <select id="notion-status" onchange="loadNotionPreview(document.getElementById('notion-client-sel').value)">
+            <option value="active">active</option>
+            <option value="proposal sent">proposal sent</option>
+            <option value="negotiating">negotiating</option>
+            <option value="prospect">prospect</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:16px">
+        <div><label>Sync mode</label>
+          <select id="notion-mode" onchange="loadNotionPreview(document.getElementById('notion-client-sel').value)">
+            <option value="auto">Auto-detect (recommended)</option>
+            <option value="update">Update existing row (this is a converted prospect)</option>
+            <option value="create">Always create new row</option>
+          </select>
+        </div>
+        <div><label>If updating — exact Notion page name (optional, helps Claude match)</label>
+          <input id="notion-match-hint" placeholder="e.g. CloudPay Solutions"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Sync packet preview</div><span class="tag tag-indigo">Matches your Clients DB schema</span></div>
+        <div id="notion-empty" class="empty-state">
+          <i class="ti" style="font-size:32px">◆</i>
+          <div>Select a client above to build their Notion sync packet.</div>
+        </div>
+        <div id="notion-preview-wrap" style="display:none">
+          <div class="doc-meta">
+            <span class="tag" id="notion-mode-tag">auto-detect</span>
+          </div>
+          <table style="margin-bottom:12px">
+            <tr><td style="color:var(--muted);width:160px">Client Name</td><td id="np-name"></td></tr>
+            <tr><td style="color:var(--muted)">Service</td><td id="np-service"></td></tr>
+            <tr><td style="color:var(--muted)">Contact Name</td><td id="np-contact"></td></tr>
+            <tr><td style="color:var(--muted)">Contact Email</td><td id="np-email"></td></tr>
+            <tr><td style="color:var(--muted)">Monthly Rate</td><td id="np-rate"></td></tr>
+            <tr><td style="color:var(--muted)">MRR Contribution</td><td id="np-mrr"></td></tr>
+            <tr><td style="color:var(--muted)">Start Date</td><td id="np-start"></td></tr>
+            <tr><td style="color:var(--muted)">Status</td><td id="np-status"></td></tr>
+            <tr><td style="color:var(--muted)">Onboarding Stage</td><td id="np-stage"></td></tr>
+          </table>
+          <div class="output-box" id="notion-packet" style="font-size:11px;max-height:300px;overflow-y:auto"></div>
+          <div class="flex" style="margin-top:10px;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="copyNotionPacket()">Copy sync packet</button>
+            <button class="btn btn-ghost btn-sm" onclick="copyNotionPacket(true)">Copy packet + ask Claude to sync</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETUP PAGE -->
+    <div id="page-setup" style="display:none">
+      <div class="alert alert-indigo">Set your details once. Used across every welcome email and contract generated.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">API & business settings</div></div>
+          <div class="form-full"><label>Anthropic API key</label><input id="api-key-input" type="password" placeholder="sk-ant-..."></div>
+          <div class="form-row">
+            <div><label>Your name</label><input id="my-name-input" placeholder="e.g. Deeny"></div>
+            <div><label>Your role / title</label><input id="my-title-input" placeholder="e.g. Founder"></div>
+          </div>
+          <div class="form-row">
+            <div><label>Ghost Desk business name</label><input id="ghost-biz-input" placeholder="e.g. Ghost Desk"></div>
+            <div><label>OutreachOS business name</label><input id="email-biz-input" placeholder="e.g. OutreachOS"></div>
+          </div>
+          <div class="form-full"><label>Resume/LinkedIn business name</label><input id="resume-biz-input" placeholder="e.g. Resume/LinkedIn"></div>
+          <div class="form-full"><label>Payment details (for contracts/invoices)</label><textarea id="payment-input" placeholder="e.g. Bank transfer — details sent separately on invoice. Net 7 days from invoice date." style="min-height:60px"></textarea></div>
+          <div class="form-full"><label>Jurisdiction / governing law (for contracts)</label><input id="jurisdiction-input" placeholder="e.g. Republic of South Africa"></div>
+          <button class="btn btn-primary" onclick="saveSetup()">Save settings</button>
+          <div id="setup-msg" style="margin-top:8px;font-size:12px;color:var(--green-text);display:none">Settings saved.</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">How this works</div></div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.9">
+            1. Add your details here once.<br>
+            2. When a client says yes, go to Generate Package.<br>
+            3. Fill in their brief — name, scope, retainer.<br>
+            4. Click generate. Four documents appear: welcome email, intake form, contract/SOW, and a 6-step onboarding checklist.<br>
+            5. Click "Save client & start tracker" to add them to your roster and begin tracking their onboarding progress.<br>
+            6. Copy each document into your email client / e-signature tool as needed.
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--muted)">
+            This tool generates documents only — nothing is sent automatically. You stay in control of every send.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+let state={clients:[],apiKey:'',myName:'',myTitle:'',ghostBiz:'Ghost Desk',emailBiz:'OutreachOS',payment:'',jurisdiction:'',selectedClientId:null,lastPackage:null,activeOutputTab:'welcome'};
+
+function save(){localStorage.setItem('oh_state',JSON.stringify(state))}
+function load(){try{const s=localStorage.getItem('oh_state');if(s)Object.assign(state,JSON.parse(s))}catch(e){}}
+load();
+if(!state.clients)state.clients=[];
+
+const STAGES=['welcome_sent','intake_received','contract_signed','payment_setup','kickoff_call','first_deliverable'];
+const STAGE_LABELS={welcome_sent:'Welcome sent',intake_received:'Intake received',contract_signed:'Contract signed',payment_setup:'Payment set up',kickoff_call:'Kickoff call done',first_deliverable:'First deliverable sent'};
+
+function getApiKey(){return state.apiKey||''}
+
+function renderSidebar(){
+  const list=document.getElementById('client-list');
+  list.innerHTML=state.clients.map((c,i)=>{
+    const colors=['#6366f1','#14b8a6','#a855f7','#f59e0b','#3b82f6','#ef4444'];
+    const color=colors[i%colors.length];
+    const doneCount=(c.checklist||[]).filter(x=>x).length;
+    return `<div class="client-chip ${state.selectedClientId===c.id?'active':''}" onclick="selectClient('${c.id}')">
+      <div class="avatar" style="background:${color}22;color:${color}">${c.name.slice(0,2).toUpperCase()}</div>
+      <div><div class="client-name">${c.name}</div><div class="client-stage">${doneCount}/6 steps</div></div>
+    </div>`;
+  }).join('');
+
+  const sel=document.getElementById('active-client-sel');
+  const v=sel.value;
+  sel.innerHTML='<option value="">Select client</option>';
+  state.clients.forEach(c=>sel.innerHTML+=`<option value="${c.id}" ${c.id===v?'selected':''}>${c.name}</option>`);
+
+  const fullyOnboarded=state.clients.filter(c=>(c.checklist||[]).filter(x=>x).length===6).length;
+  const total=state.clients.length;
+  const pct=total?Math.round(fullyOnboarded/total*100):0;
+  document.getElementById('pipeline-fill').style.width=pct+'%';
+  document.getElementById('pipeline-text').textContent=`${fullyOnboarded} of ${total} clients fully onboarded`;
+
+  document.getElementById('setup-dot').style.display=state.apiKey?'none':'block';
+}
+
+function renderClientsTable(){
+  const tb=document.getElementById('clients-tbody');
+  if(!state.clients.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">No clients onboarded yet.</td></tr>';return}
+  tb.innerHTML=state.clients.map(c=>{
+    const doneCount=(c.checklist||[]).filter(x=>x).length;
+    const stageLabel=doneCount===6?'Complete':doneCount===0?'Not started':STAGE_LABELS[STAGES[doneCount]]||'In progress';
+    const bizTag=c.business==='ghost'?`<span class="tag tag-purple">Ghost Desk</span>`:`<span class="tag tag-teal">OutreachOS</span>`;
+    return `<tr>
+      <td><div style="font-weight:500">${c.name}</div><div style="font-size:11px;color:var(--muted)">${c.contact||''}</div></td>
+      <td>${bizTag}</td>
+      <td style="color:var(--green-text)">$${parseFloat(c.retainer||0).toLocaleString()}/mo</td>
+      <td><span class="tag ${doneCount===6?'tag-teal':doneCount===0?'tag-red':'tag-amber'}">${stageLabel} (${doneCount}/6)</span></td>
+      <td>${c.start||'—'}</td>
+      <td><button class="copy-btn" onclick="selectClient('${c.id}');showPage('tracker')">View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderTracker(){
+  const wrap=document.getElementById('tracker-content');
+  if(!state.clients.length){
+    wrap.innerHTML='<div class="card empty-state"><i class="ti" style="font-size:32px">☑</i><div>No clients yet. Onboard your first client to start tracking.</div></div>';
+    return;
+  }
+  wrap.innerHTML=state.clients.map(c=>{
+    const checklist=c.checklist||[false,false,false,false,false,false];
+    const doneCount=checklist.filter(x=>x).length;
+    const bizTag=c.business==='ghost'?`<span class="tag tag-purple">${state.ghostBiz||'Ghost Desk'}</span>`:`<span class="tag tag-teal">${state.emailBiz||'OutreachOS'}</span>`;
+    return `<div class="card">
+      <div class="card-header">
+        <div><div class="card-title">${c.name}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${c.contact||''} · $${parseFloat(c.retainer||0).toLocaleString()}/mo</div></div>
+        <div class="flex" style="gap:6px">${bizTag}<span class="tag ${doneCount===6?'tag-teal':'tag-amber'}">${doneCount}/6 complete</span></div>
+      </div>
+      <div class="checklist">
+        ${STAGES.map((stage,i)=>`<div class="check-item ${checklist[i]?'done':''}" onclick="toggleCheck('${c.id}',${i})">
+          <div class="checkbox ${checklist[i]?'checked':''}">${checklist[i]?'<i class="ti" style="font-size:12px;color:#000">✓</i>':''}</div>
+          <div class="check-text ${checklist[i]?'done':''}">${STAGE_LABELS[stage]}</div>
+          <div class="check-meta">Step ${i+1}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showPage(p){
+  ['generate','clients','tracker','notion','setup'].forEach(n=>{
+    const el=document.getElementById('page-'+n);
+    if(el)el.style.display=n===p?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active',el.getAttribute('onclick')===`showPage('${p}')`);
+  });
+  const titles={generate:'Generate Package',clients:'All Clients',tracker:'Onboarding Tracker',notion:'Notion Sync',setup:'Setup'};
+  const subs={generate:'Welcome email, intake form, contract, and checklist — one click',clients:'Every client across both businesses',tracker:'Track onboarding progress per client',notion:'Build a sync packet to push into your Notion Clients database',setup:'Configure your details once'};
+  document.getElementById('page-title').textContent=titles[p];
+  document.getElementById('page-sub').textContent=subs[p];
+  if(p==='clients')renderClientsTable();
+  if(p==='tracker')renderTracker();
+  if(p==='notion')renderNotionClientList();
+  if(p==='setup'){
+    document.getElementById('api-key-input').value=state.apiKey||'';
+    document.getElementById('my-name-input').value=state.myName||'';
+    document.getElementById('my-title-input').value=state.myTitle||'';
+    document.getElementById('ghost-biz-input').value=state.ghostBiz||'Ghost Desk';
+    document.getElementById('email-biz-input').value=state.emailBiz||'OutreachOS';
+    document.getElementById('resume-biz-input').value=state.resumeBiz||'Resume/LinkedIn';
+    document.getElementById('payment-input').value=state.payment||'';
+    document.getElementById('jurisdiction-input').value=state.jurisdiction||'';
+  }
+}
+
+function renderNotionClientList(){
+  const sel=document.getElementById('notion-client-sel');
+  const v=sel.value;
+  sel.innerHTML='<option value="">Select client</option>';
+  state.clients.forEach(c=>sel.innerHTML+=`<option value="${c.id}" ${c.id===v?'selected':''}>${c.name}</option>`);
+}
+
+const STAGE_NOTION_LABELS=['Welcome sent','Intake received','Contract signed','Payment set up','Kickoff call done','First deliverable sent'];
+const BUSINESS_TO_SERVICE={ghost:'Ghost Desk',email:'OutreachOS',resume:'Resume/LinkedIn'};
+
+function loadNotionPreview(clientId){
+  if(!clientId){
+    document.getElementById('notion-empty').style.display='block';
+    document.getElementById('notion-preview-wrap').style.display='none';
+    return;
+  }
+  const c=state.clients.find(x=>x.id===clientId);
+  if(!c)return;
+  document.getElementById('notion-empty').style.display='none';
+  document.getElementById('notion-preview-wrap').style.display='block';
+
+  const checklist=c.checklist||[false,false,false,false,false,false];
+  let doneCount=0;
+  for(let i=0;i<checklist.length;i++){if(checklist[i])doneCount=i+1;else break}
+  const stageLabel=doneCount===0?'Not started':STAGE_NOTION_LABELS[doneCount-1];
+  const service=BUSINESS_TO_SERVICE[c.business]||'Ghost Desk';
+  const retainer=parseFloat(c.retainer||0);
+  const status=document.getElementById('notion-status').value;
+  const mode=document.getElementById('notion-mode').value;
+  const matchHint=document.getElementById('notion-match-hint').value.trim();
+
+  document.getElementById('np-name').textContent=c.name;
+  document.getElementById('np-service').textContent=service;
+  document.getElementById('np-contact').textContent=c.contact||'—';
+  document.getElementById('np-email').textContent=c.email||'—';
+  document.getElementById('np-rate').textContent='$'+retainer.toLocaleString();
+  document.getElementById('np-mrr').textContent=status==='active'?'$'+retainer.toLocaleString():'$0';
+  document.getElementById('np-start').textContent=c.start||'—';
+  document.getElementById('np-status').textContent=status;
+  document.getElementById('np-stage').textContent=stageLabel;
+
+  const modeTag=document.getElementById('notion-mode-tag');
+  const modeLabels={auto:'auto-detect existing row',update:'update existing row',create:'always create new row'};
+  modeTag.textContent=modeLabels[mode];
+  modeTag.className='tag '+(mode==='create'?'tag-amber':mode==='update'?'tag-green':'tag-indigo');
+
+  const packet={
+    action:'sync_to_notion_clients_db',
+    target_database:'Clients',
+    sync_mode:mode,
+    match_instructions:mode==='create'?'Always create a brand new page. Do not search for an existing match.':
+      `Before writing, search the Clients database for an existing page whose Client Name matches "${matchHint||c.name}" (case-insensitive, ignore suffixes like company type). ${mode==='update'?'This is expected to be a converted prospect — an existing row should exist. If found, use update_properties on that page (do not create a duplicate). If genuinely not found, create a new page and mention that no match was found.':'If a confident match is found, update that page in place rather than creating a duplicate. If no clear match exists, create a new page.'}`,
+    properties:{
+      'Client Name':c.name,
+      'Service':service,
+      'Contact Name':c.contact||'',
+      'Contact Email':c.email||'',
+      'Monthly Rate':retainer,
+      'MRR Contribution':status==='active'?retainer:0,
+      'Start Date':c.start||'',
+      'Status':status,
+      'Onboarding Stage':stageLabel
+    },
+    content_instructions:'Insert the documents below under an "Onboarding documents" section. If the page already has content, append rather than replace — do not delete existing notes or history.',
+    documents:state.lastPackage&&state.lastPackage.meta&&state.lastPackage.meta.name===c.name?{
+      welcomeEmail:state.lastPackage.welcomeEmail,
+      intakeForm:state.lastPackage.intakeForm,
+      contract:state.lastPackage.contract,
+      checklist:state.lastPackage.checklist
+    }:null
+  };
+  document.getElementById('notion-packet').textContent=JSON.stringify(packet,null,2);
+  window._notionPacket=packet;
+  window._notionClientName=c.name;
+}
+
+function copyNotionPacket(withInstruction){
+  if(!window._notionPacket){alert('Select a client first.');return}
+  let text=JSON.stringify(window._notionPacket,null,2);
+  if(withInstruction){
+    const mode=window._notionPacket.sync_mode;
+    const lead=mode==='update'
+      ?`Sync this client to my Notion Clients database. This is a converted prospect — search for their existing row first and update it in place rather than creating a duplicate.`
+      :mode==='create'
+      ?`Sync this client to my Notion Clients database as a brand new row — do not search for an existing match.`
+      :`Sync this client to my Notion Clients database. Search for an existing row first; update in place if found, otherwise create new.`;
+    text=`${lead} If documents are included, add them as page content. Here's the packet:\n\n${text}`;
+  }
+  navigator.clipboard.writeText(text);
+  const btn=event.target;
+  const orig=btn.textContent;
+  btn.textContent='Copied!';btn.classList.add('copy-success');
+  setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copy-success')},1500);
+}
+
+function selectClient(id){
+  state.selectedClientId=id;
+  const c=state.clients.find(x=>x.id===id);
+  if(c){
+    document.getElementById('active-client-sel').value=id;
+    document.getElementById('gen-client-tag').textContent=c.name;
+  }
+  renderSidebar();save();
+}
+
+function switchClient(id){
+  state.selectedClientId=id||null;
+  const c=state.clients.find(x=>x.id===id);
+  document.getElementById('gen-client-tag').textContent=c?c.name:'No client selected';
+  if(c){
+    document.getElementById('g-business').value=c.business||'ghost';
+    document.getElementById('g-name').value=c.name||'';
+    document.getElementById('g-contact').value=c.contact||'';
+    document.getElementById('g-title').value=c.contactTitle||'';
+    document.getElementById('g-email').value=c.email||'';
+    document.getElementById('g-retainer').value=c.retainer||'';
+    document.getElementById('g-start').value=c.start||'';
+    document.getElementById('g-term').value=c.term||'month-to-month';
+    document.getElementById('g-scope').value=c.scope||'';
+  }
+  renderSidebar();save();
+}
+
+function openNewClient(){
+  showPage('generate');
+  state.selectedClientId=null;
+  document.getElementById('gen-client-tag').textContent='New client';
+  ['g-name','g-contact','g-title','g-email','g-retainer','g-scope','g-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('g-start').value=new Date().toISOString().split('T')[0];
+}
+
+function saveSetup(){
+  state.apiKey=document.getElementById('api-key-input').value.trim();
+  state.myName=document.getElementById('my-name-input').value.trim();
+  state.myTitle=document.getElementById('my-title-input').value.trim();
+  state.ghostBiz=document.getElementById('ghost-biz-input').value.trim()||'Ghost Desk';
+  state.emailBiz=document.getElementById('email-biz-input').value.trim()||'OutreachOS';
+  state.resumeBiz=document.getElementById('resume-biz-input').value.trim()||'Resume/LinkedIn';
+  state.payment=document.getElementById('payment-input').value.trim();
+  state.jurisdiction=document.getElementById('jurisdiction-input').value.trim();
+  save();
+  document.getElementById('setup-msg').style.display='block';
+  setTimeout(()=>document.getElementById('setup-msg').style.display='none',2000);
+  renderSidebar();
+}
+
+function escHtml(str){return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+async function generatePackage(){
+  const key=getApiKey();
+  if(!key){alert('Add your API key in Setup first.');showPage('setup');return}
+  const business=document.getElementById('g-business').value;
+  const name=document.getElementById('g-name').value.trim();
+  const contact=document.getElementById('g-contact').value.trim();
+  const contactTitle=document.getElementById('g-title').value.trim();
+  const email=document.getElementById('g-email').value.trim();
+  const retainer=document.getElementById('g-retainer').value.trim();
+  const start=document.getElementById('g-start').value;
+  const term=document.getElementById('g-term').value;
+  const scope=document.getElementById('g-scope').value.trim();
+  const notes=document.getElementById('g-notes').value.trim();
+
+  if(!name||!contact||!scope){alert('Fill in at least: client name, contact name, and scope of work.');return}
+
+  const bizName=business==='ghost'?(state.ghostBiz||'Ghost Desk'):business==='email'?(state.emailBiz||'OutreachOS'):(state.resumeBiz||'Resume/LinkedIn');
+  const myName=state.myName||'[Your name]';
+  const myTitle=state.myTitle||'Founder';
+  const payment=state.payment||'Bank transfer, net 7 days from invoice date.';
+  const jurisdiction=state.jurisdiction||'[Your jurisdiction]';
+
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Generating package...';
+  document.getElementById('gen-status').style.display='inline-flex';
+  document.getElementById('output-empty').style.display='none';
+  document.getElementById('output-content').style.display='block';
+  document.getElementById('output-tabs').style.display='none';
+  document.getElementById('output-box').className='output-box loading';
+  document.getElementById('output-box').textContent='Generating welcome email, intake form, contract, and checklist...';
+
+  const sharedContext=`
+BUSINESS: ${bizName}
+SENDER: ${myName}, ${myTitle}
+CLIENT/COMPANY: ${name}
+CLIENT CONTACT: ${contact}${contactTitle?', '+contactTitle:''}
+CLIENT EMAIL: ${email||'[not provided]'}
+MONTHLY RETAINER: $${retainer||'[amount]'}
+START DATE: ${start||'[start date]'}
+ENGAGEMENT TERM: ${term}
+SCOPE OF WORK: ${scope}
+${notes?`ADDITIONAL CONTEXT: ${notes}`:''}
+PAYMENT TERMS: ${payment}
+JURISDICTION: ${jurisdiction}`;
+
+  try{
+    const prompt=`You are a professional services operator onboarding a new client. Generate FOUR complete, ready-to-use documents based on this context:
+${sharedContext}
+
+Return a JSON object with exactly these four keys: "welcomeEmail", "intakeForm", "contract", "checklist"
+
+1. welcomeEmail (string): A warm, professional welcome email from ${myName} to ${contact}. Confirms the engagement, sets expectations for next steps, mentions the intake form is attached/linked, states when work begins. Under 200 words. Sign off as ${myName}, ${myTitle} at ${bizName}.
+
+2. intakeForm (string): A complete intake questionnaire formatted as numbered questions with brief context per question, tailored specifically to what's needed to deliver "${scope}". Cover: brand voice/preferences, key contacts, access needed (logins, tools), content/messaging do's and don'ts, target audience details, and any compliance or approval requirements. 10-15 questions.
+
+3. contract (string): A simple, professional Statement of Work / services agreement. Include: parties, effective date (${start}), scope of work (use the scope provided, expand into clear deliverables), term (${term}), fees ($${retainer}/month, ${payment}), termination clause (30 days written notice either party), confidentiality clause, intellectual property clause (client owns final deliverables), and signature blocks for both parties. Governing law: ${jurisdiction}. Keep it readable, not overly legalistic, but complete enough to be a real working agreement.
+
+4. checklist (string): A 6-step onboarding checklist as a numbered list, one line per step, matching exactly these milestones in this order: "Welcome email sent", "Intake form received", "Contract signed", "Payment method set up", "Kickoff call completed", "First deliverable sent". For each, add a short one-sentence note on what "done" looks like for THIS specific client.
+
+Return ONLY the JSON object, no markdown formatting, no backticks.`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    let text=data.content[0].text.trim();
+    text=text.replace(/^```json?\s*/,'').replace(/```\s*$/,'').trim();
+    const pkg=JSON.parse(text);
+
+    state.lastPackage={
+      ...pkg,
+      meta:{business,name,contact,contactTitle,email,retainer,start,term,scope}
+    };
+    save();
+
+    document.getElementById('gen-status').style.display='none';
+    document.getElementById('output-tabs').style.display='flex';
+    switchOutputTab('welcome',document.querySelector('#output-tabs .tab'));
+
+  }catch(e){
+    document.getElementById('gen-status').style.display='none';
+    document.getElementById('output-box').className='output-box';
+    document.getElementById('output-box').textContent='Error: '+e.message+'\n\nCheck your API key in Setup.';
+  }
+  btn.disabled=false;btn.innerHTML='⊕ Generate full onboarding package';
+}
+
+function switchOutputTab(tab,el){
+  state.activeOutputTab=tab;
+  document.querySelectorAll('#output-tabs .tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(!state.lastPackage)return;
+  const map={welcome:'welcomeEmail',intake:'intakeForm',contract:'contract',checklist:'checklist'};
+  const content=state.lastPackage[map[tab]]||'';
+  document.getElementById('output-box').className='output-box';
+  document.getElementById('output-box').textContent=content;
+}
+
+function copyOutput(){
+  const text=document.getElementById('output-box').textContent;
+  navigator.clipboard.writeText(text);
+  flashCopyBtn(event.target);
+}
+
+function copyAllOutputs(){
+  if(!state.lastPackage)return;
+  const p=state.lastPackage;
+  const full=`═══ WELCOME EMAIL ═══\n${p.welcomeEmail}\n\n═══ INTAKE FORM ═══\n${p.intakeForm}\n\n═══ CONTRACT / SOW ═══\n${p.contract}\n\n═══ ONBOARDING CHECKLIST ═══\n${p.checklist}`;
+  navigator.clipboard.writeText(full);
+  flashCopyBtn(event.target);
+}
+
+function flashCopyBtn(btn){
+  const orig=btn.textContent;
+  btn.textContent='Copied!';btn.classList.add('copy-success');
+  setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copy-success')},1500);
+}
+
+function saveAsClient(){
+  if(!state.lastPackage){alert('Generate a package first.');return}
+  const m=state.lastPackage.meta;
+  if(state.selectedClientId){
+    const c=state.clients.find(x=>x.id===state.selectedClientId);
+    if(c){
+      Object.assign(c,{business:m.business,name:m.name,contact:m.contact,contactTitle:m.contactTitle,email:m.email,retainer:m.retainer,start:m.start,term:m.term,scope:m.scope});
+      save();renderSidebar();
+      alert('Client updated.');
+      return;
+    }
+  }
+  const newClient={
+    id:'c'+Date.now(),
+    business:m.business,name:m.name,contact:m.contact,contactTitle:m.contactTitle,
+    email:m.email,retainer:m.retainer,start:m.start,term:m.term,scope:m.scope,
+    checklist:[true,false,false,false,false,false]
+  };
+  state.clients.push(newClient);
+  state.selectedClientId=newClient.id;
+  save();renderSidebar();
+  alert(`${m.name} saved! Welcome email marked as sent. Track their progress in the Onboarding Tracker tab.`);
+  showPage('tracker');
+}
+
+function toggleCheck(clientId,idx){
+  const c=state.clients.find(x=>x.id===clientId);
+  if(!c)return;
+  if(!c.checklist)c.checklist=[false,false,false,false,false,false];
+  c.checklist[idx]=!c.checklist[idx];
+  save();renderTracker();renderSidebar();
+}
+
+document.getElementById('g-start').value=new Date().toISOString().split('T')[0];
+
+// ── Pre-load demo client (Lindiwe / CloudPay Solutions) ─────────
+// Visible immediately — no API key needed. Shows the full flow.
+(function seedDemoClient(){
+  const DEMO_ID='demo-lindiwe-cloudpay';
+  const alreadyExists=state.clients.find(c=>c.id===DEMO_ID);
+  if(alreadyExists)return; // don't duplicate on refresh
+
+  const demoClient={
+    id: DEMO_ID,
+    business: 'email',
+    name: 'CloudPay Solutions',
+    contact: 'Lindiwe Mokoena',
+    contactTitle: 'CFO',
+    email: 'l.mokoena@cloudpaysolutions.co.za',
+    retainer: '1200',
+    start: '2026-06-23',
+    term: '3-month',
+    scope: '200 qualified leads/month targeting fintech HR & payroll decision-makers, 5-email cold sequence, weekly reply handling, and monthly campaign performance report.',
+    checklist: [true, false, false, false, false, false], // welcome sent, rest pending
+    createdAt: new Date().toISOString(),
+    _isDemo: true
+  };
+
+  // Pre-generated package (shown in output tabs without needing API key)
+  const demoPackage={
+    meta:{
+      business:'email',
+      name:'CloudPay Solutions',
+      contact:'Lindiwe Mokoena',
+      contactTitle:'CFO',
+      email:'l.mokoena@cloudpaysolutions.co.za',
+      retainer:'1200',
+      start:'2026-06-23',
+      term:'3-month',
+      scope:'200 qualified leads/month targeting fintech HR & payroll decision-makers, 5-email cold sequence, weekly reply handling, and monthly campaign performance report.'
+    },
+    welcomeEmail:`Subject: Welcome to OutreachOS, Lindiwe
+
+Hi Lindiwe,
+
+Really glad we're doing this. Manual payroll reconciliation and compliance overhead are exactly the pain points that tend to resonate with your buyers — we should have strong angles to work with from day one.
+
+Here's what happens next: I'll send over a short intake form today to nail down your ICP details, any messaging guardrails, and which companies to exclude. Once that's back, your first 5-email sequence and a qualified lead batch will be ready within 5 business days — with outreach going live shortly after.
+
+Official start date is June 23rd. I'll drop a calendar link for a 15-minute kickoff call before then so we can align before the first send.
+
+Talk soon,
+[Your name]
+Founder, OutreachOS`,
+
+    intakeForm:`CLOUDPAY SOLUTIONS — Onboarding Intake Form
+OutreachOS | Completed by: Lindiwe Mokoena, CFO
+=========================================
+
+1. ICP REFINEMENT
+Beyond "50–500 employee fintech," what other firmographic filters matter?
+(e.g. geography — SA only, East Africa, or pan-African? Growth stage — Series A+? Revenue band?)
+
+2. BUYER PERSONA
+Who specifically receives and acts on these emails — HR Director, Head of Payroll, CFO, CTO?
+Are there multiple stakeholders we should be sequencing simultaneously?
+
+3. EXCLUSION LIST
+Any companies, individuals, or sectors that should never receive outreach?
+(Competitors, existing clients, personal contacts, regulated industries you're not targeting yet?)
+
+4. COMPLIANCE & MESSAGING GUARDRAILS
+Given the fintech vertical, are there any regulatory or legal constraints on outbound messaging language?
+(e.g. POPIA requirements for SA-based prospects, GDPR for international targets?)
+
+5. APPROVED SENDER & DOMAIN
+Which domain should outreach come from? Has it been warmed up for cold email?
+(A fresh domain sending 200 emails/day will hit spam. Let's confirm this upfront.)
+
+6. SOCIAL PROOF & RESULTS
+What case studies, stats, or client results can we reference in sequences?
+(e.g. "Cut payroll reconciliation time by 60% for a 120-person logistics company")
+
+7. CALL-TO-ACTION PREFERENCE
+Preferred CTA: book a call directly via Calendly, reply with interest, or something softer?
+Is there a specific meeting type or duration that converts best for your sales team?
+
+8. REPLY TRIAGE
+Who handles replies once prospects respond — you, a sales rep, or should OutreachOS provide first-pass suggested responses?
+
+9. OBJECTIONS YOU HEAR MOST
+What are the top 2–3 objections your sales team hears on intro calls?
+(These will be pre-empted or handled in follow-up emails.)
+
+10. CURRENT TOOLS
+What CRM are you using? (HubSpot, Salesforce, Pipedrive?)
+Should booked calls auto-create deals in your CRM, or is manual for now?
+
+11. SUCCESS METRICS
+Beyond meetings booked, how will you measure campaign success internally?
+(Open rate, reply rate, pipeline value generated, closed deals?)
+
+12. TIMELINE PRESSURE
+Is there a product launch, funding round, or event that creates urgency on your end?
+(Knowing this helps us weight volume and pacing appropriately.)
+
+Please return this form by June 21st so we can brief the sequence before your June 23rd start date.`,
+
+    contract:`STATEMENT OF WORK — OUTREACH SERVICES
+
+Parties
+Service Provider: OutreachOS ([Your name], Founder)
+Client: CloudPay Solutions (represented by Lindiwe Mokoena, CFO)
+
+Effective Date: June 23, 2026
+
+─────────────────────────────────────────
+1. SCOPE OF WORK
+
+OutreachOS agrees to deliver the following services on a monthly basis:
+
+a) Lead Research & Prospecting
+   Identification and qualification of 200 prospects per month matching
+   the Client's agreed ideal customer profile (ICP) in the fintech HR
+   and payroll decision-maker segment.
+
+b) Cold Email Sequence
+   Creation and delivery of a 5-email outreach sequence per campaign
+   cycle, including A/B subject line variants and personalisation at scale.
+
+c) Reply Handling
+   Weekly review and suggested responses to prospect replies, including
+   handling of interested, objection, not-now, and unsubscribe scenarios.
+
+d) Monthly Reporting
+   A written campaign performance report delivered by the 3rd of each
+   month covering open rates, reply rates, meetings booked, and
+   recommendations for the following cycle.
+
+─────────────────────────────────────────
+2. FEES & PAYMENT
+
+Monthly Retainer: USD $1,200 per month
+Payment Terms: Net 7 days from invoice date
+Invoice Date: 1st of each calendar month
+Payment Method: [Bank transfer — details on invoice]
+
+Late payments beyond 14 days may result in pausing of active campaigns
+until the outstanding balance is settled.
+
+─────────────────────────────────────────
+3. TERM & TERMINATION
+
+Initial Term: 3 months from the Effective Date (through September 23, 2026)
+Renewal: Month-to-month thereafter
+Termination: Either party may terminate with 30 days written notice
+after the initial 3-month term has been completed.
+
+Early termination during the initial term requires payment of the
+remaining months' fees unless both parties agree otherwise in writing.
+
+─────────────────────────────────────────
+4. CONFIDENTIALITY
+
+Both parties agree to keep confidential all non-public information
+shared in connection with this engagement, including prospect lists,
+campaign results, pricing, and business strategy. This obligation
+survives termination of this agreement.
+
+─────────────────────────────────────────
+5. INTELLECTUAL PROPERTY
+
+All final deliverables produced under this agreement — including email
+sequences, lead lists, and reports — are the property of the Client
+upon receipt of full payment. OutreachOS retains the right to use
+anonymised campaign data for internal benchmarking purposes only.
+
+─────────────────────────────────────────
+6. LIMITATION OF LIABILITY
+
+OutreachOS does not guarantee specific outcomes (meetings booked,
+revenue generated) as results depend on market conditions, product-market
+fit, and client responsiveness to the process. OutreachOS guarantees
+delivery of the agreed services to a professional standard.
+
+─────────────────────────────────────────
+7. GOVERNING LAW
+
+This agreement is governed by the laws of the Republic of South Africa.
+
+─────────────────────────────────────────
+SIGNATURES
+
+Service Provider:
+Name: ___________________________
+Signature: ______________________
+Date: ___________________________
+
+Client:
+Name: Lindiwe Mokoena
+Title: CFO, CloudPay Solutions
+Signature: ______________________
+Date: ___________________________`,
+
+    checklist:`CLOUDPAY SOLUTIONS — Onboarding Checklist
+==========================================
+
+Step 1: Welcome email sent
+Done when: Personalised welcome email received by Lindiwe confirming
+June 23 start date and intake form request. ✓ COMPLETE (2026-06-21)
+
+Step 2: Intake form received
+Done when: Completed intake form returned by Lindiwe with ICP details,
+exclusion list, approved sender domain, and CRM info confirmed.
+
+Step 3: Contract signed
+Done when: Signed Statement of Work received from Lindiwe Mokoena
+(CFO, CloudPay Solutions) via e-signature or email confirmation.
+
+Step 4: Payment method set up
+Done when: First invoice sent and payment received or payment method
+confirmed. Auto-payment or bank transfer details exchanged.
+
+Step 5: Kickoff call completed
+Done when: 15-minute kickoff call held with Lindiwe. ICP finalised,
+sequence tone approved, reply triage process agreed.
+
+Step 6: First deliverable sent
+Done when: First qualified lead batch (200 prospects) and 5-email
+sequence delivered to Lindiwe for review before going live.`
+  };
+
+  state.clients.push(demoClient);
+  state.lastPackage=demoPackage;
+  state.selectedClientId=DEMO_ID;
+  save();
+})();
+
+renderSidebar();
+
+// ── Auto-init demo view ────────────────────────────────────────
+(function initDemoView(){
+  const DEMO_ID='demo-lindiwe-cloudpay';
+  const banner=document.createElement('div');
+  banner.id='demo-banner';
+  banner.style.cssText='position:fixed;bottom:16px;right:16px;background:#1e1b4b;border:1px solid #6366f1;border-radius:10px;padding:12px 16px;font-size:12px;color:#a5b4fc;z-index:999;max-width:280px;line-height:1.6;box-shadow:0 4px 24px rgba(0,0,0,.6)';
+  banner.innerHTML=`<div style="font-weight:600;margin-bottom:4px;color:#e0e7ff">🧪 Demo mode — no API key needed</div>
+Lindiwe Mokoena (CloudPay Solutions) is pre-loaded with a full sample onboarding package. Browse every tab to see the full flow.
+<br><br>Add your API key in <span style="color:#e0e7ff;cursor:pointer;text-decoration:underline" onclick="showPage('setup');document.getElementById('demo-banner').remove()">Setup</span> to generate real documents for your own clients.
+<div style="margin-top:8px;text-align:right"><span style="cursor:pointer;color:#818cf8" onclick="document.getElementById('demo-banner').remove()">Dismiss ×</span></div>`;
+  document.body.appendChild(banner);
+
+  const c=state.clients.find(x=>x.id===DEMO_ID);
+  if(!c||!state.lastPackage)return;
+  setTimeout(()=>{
+    try{
+      // Pre-fill the generate form
+      document.getElementById('g-business').value=c.business;
+      document.getElementById('g-name').value=c.name;
+      document.getElementById('g-contact').value=c.contact;
+      document.getElementById('g-title').value=c.contactTitle;
+      document.getElementById('g-email').value=c.email;
+      document.getElementById('g-retainer').value=c.retainer;
+      document.getElementById('g-start').value=c.start;
+      document.getElementById('g-term').value=c.term;
+      document.getElementById('g-scope').value=c.scope;
+      document.getElementById('gen-client-tag').textContent=c.name;
+      document.getElementById('active-client-sel').value=c.id;
+      // Show the pre-generated package in output panel
+      document.getElementById('output-empty').style.display='none';
+      document.getElementById('output-content').style.display='block';
+      document.getElementById('output-tabs').style.display='flex';
+      document.getElementById('output-box').className='output-box';
+      document.getElementById('output-box').textContent=state.lastPackage.welcomeEmail||'';
+      document.getElementById('save-client-btn').style.display='none';
+    }catch(e){}
+  },150);
+})();
+</script>
+</body>
+</html>
