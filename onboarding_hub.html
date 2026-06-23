@@ -344,7 +344,7 @@ tr:hover td{background:var(--surface2)}
           <div class="card-header"><div class="card-title">API & business settings</div></div>
           <div class="form-full"><label>Anthropic API key</label><input id="api-key-input" type="password" placeholder="sk-ant-..."></div>
           <div class="form-row">
-            <div><label>Your name</label><input id="my-name-input" placeholder="e.g. Deeny"></div>
+            <div><label>Your name</label><input id="my-name-input" placeholder="e.g. Zaydeen Becher"></div>
             <div><label>Your role / title</label><input id="my-title-input" placeholder="e.g. Founder"></div>
           </div>
           <div class="form-row">
@@ -654,7 +654,7 @@ async function generatePackage(){
   if(!name||!contact||!scope){alert('Fill in at least: client name, contact name, and scope of work.');return}
 
   const bizName=business==='ghost'?(state.ghostBiz||'Ghost Desk'):business==='email'?(state.emailBiz||'OutreachOS'):(state.resumeBiz||'Resume/LinkedIn');
-  const myName=state.myName||'[Your name]';
+  const myName=state.myName||'Zaydeen Becher';
   const myTitle=state.myTitle||'Founder';
   const payment=state.payment||'Bank transfer, net 7 days from invoice date.';
   const jurisdiction=state.jurisdiction||'[Your jurisdiction]';
