@@ -17,7 +17,15 @@
   --teal:#14b8a6;--amber:#f59e0b;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+html{background:#08090a}
+body{background:transparent;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+.ambient{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(110px);will-change:transform}
+.orb-1{width:540px;height:540px;background:var(--orb-a,#6366f1);top:-160px;left:-100px;opacity:.20}
+.orb-2{width:640px;height:640px;background:var(--orb-b,#a855f7);top:24%;right:-220px;opacity:.14}
+.orb-3{width:480px;height:480px;background:var(--orb-a,#6366f1);bottom:-200px;left:30%;opacity:.10}
+.grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:68px 68px;-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 75%);mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 75%)}
+.grain{position:absolute;inset:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(8,9,10,.72);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.05);padding:0 32px;height:80px;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:height .35s cubic-bezier(.4,0,.2,1),background .35s,border-color .35s}
@@ -46,6 +54,7 @@ nav.scrolled::after{opacity:1}
 @media(max-width:960px){.nav-links{display:none}.nav-cta{font-size:11px;padding:8px 14px}}
 .nav-logo{display:flex;align-items:center;gap:10px}
 .nav-logo-dot{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-logo-mark{width:34px;height:34px;border-radius:9px;object-fit:cover;background:#fff;padding:2px;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 4px 14px rgba(0,0,0,.4)}
 .nav-logo-text{font-size:14px;font-weight:600;color:var(--text)}
 .nav-cta{background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;transition:opacity .15s}
 .nav-cta:hover{opacity:.88}
@@ -153,9 +162,17 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
 </head>
 <body>
 
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-overlay"></div>
+  <div class="grain"></div>
+</div>
+
 <nav>
   <div class="nav-logo">
-    <div class="nav-logo-dot" id="nav-dot">✦</div>
+    <img class="nav-logo-mark" id="nav-mark" src="assets/logo-mark.png" alt="Hustle Agents logo">
     <span class="nav-logo-text" id="nav-name">Hustle Agents</span>
   </div>
 
@@ -403,7 +420,10 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
   </div>
 </div>
 
-<footer>© 2026 Hustle Agents · Ghost Desk · OutreachOS · Resume/LinkedIn · Powered by Claude AI</footer>
+<footer>
+  <img src="assets/logo.png" alt="Hustle Agents" style="width:200px;max-width:70%;height:auto;opacity:.9;margin-bottom:18px;background:#fff;padding:14px 20px;border-radius:14px">
+  <div>© 2026 Hustle Agents · Ghost Desk · OutreachOS · Resume/LinkedIn · Powered by Claude AI</div>
+</footer>
 
 <script>
 const params=new URLSearchParams(location.search);
@@ -560,7 +580,8 @@ const d=content[s]||content.ghost;
 // Apply content
 document.title=d.navName+' — Hustle Agents';
 document.getElementById('nav-name').textContent=d.navName;
-document.getElementById('nav-dot').style.background=d.navColor;
+document.documentElement.style.setProperty('--orb-a',d.navColor);
+document.documentElement.style.setProperty('--orb-b','#a855f7');
 document.getElementById('hero-badge').textContent=d.badge;
 document.getElementById('hero-h1').innerHTML=d.h1+'<br><span id="hero-span">'+d.span+'</span>';
 document.getElementById('hero-span').style.cssText='background:linear-gradient(135deg,'+d.navColor+',#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text';
