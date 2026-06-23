@@ -470,6 +470,24 @@ tr:hover td{background:var(--surface2)}
           </div>
         </div>
       </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-header">
+          <div class="card-title">⇄ Sync from agent</div>
+          <span class="tag tag-blue">Notion is the source of truth</span>
+        </div>
+        <div class="alert alert-blue">Your agents run the business and keep Notion current. To mirror that work here, ask your agent for a <strong>Ghost Desk sync packet</strong>, paste the JSON below, and import — clients and generated posts load straight into this dashboard.</div>
+        <div class="form-full">
+          <label>Paste sync packet (JSON)</label>
+          <textarea id="import-input" placeholder='{"clients":[...],"posts":[...]}' style="min-height:120px;font-family:monospace;font-size:12px"></textarea>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-primary" onclick="importFromAgent()">Import &amp; merge</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('import-input').value=''">Clear</button>
+        </div>
+        <div id="import-msg" style="margin-top:8px;font-size:12px;display:none"></div>
+      </div>
+
     </div>
 
   </div>
@@ -633,6 +651,34 @@ function removeClient(id){
   state.clients=state.clients.filter(c=>c.id!==id);
   if(state.selectedClientId===id)state.selectedClientId=null;
   save();renderSidebar();renderClientsTable();
+}
+
+function importFromAgent(){
+  const msg=document.getElementById('import-msg');
+  const raw=document.getElementById('import-input').value.trim();
+  if(!raw){msg.style.display='block';msg.style.color='var(--amber-text)';msg.textContent='Paste a sync packet first.';return}
+  let pkt;
+  try{pkt=JSON.parse(raw)}
+  catch(e){msg.style.display='block';msg.style.color='var(--red-text)';msg.textContent='Invalid JSON — check the packet and try again.';return}
+  let added=0,updated=0,postsAdded=0;
+  if(Array.isArray(pkt.clients)){
+    pkt.clients.forEach(c=>{
+      if(!c.name)return;
+      const key=c.id||c.name;
+      const existing=state.clients.find(x=>(x.id&&x.id===c.id)||x.name===c.name);
+      const rec={id:c.id||('c'+Date.now()+Math.floor(Math.random()*999)),name:c.name,company:c.company||'',retainer:c.retainer||'1250',posts:c.posts||'15',platform:c.platform||'linkedin',tone:c.tone||'thought-leader',voice:c.voice||'',samples:c.samples||'',start:c.start||new Date().toISOString().split('T')[0],invoice:c.invoice||'1',status:c.status||'active'};
+      if(existing){Object.assign(existing,rec,{id:existing.id});updated++}
+      else{state.clients.push(rec);added++}
+    });
+  }
+  if(Array.isArray(pkt.posts)){
+    if(!state.posts)state.posts=[];
+    pkt.posts.forEach(p=>{state.posts.push({id:'p'+Date.now()+Math.floor(Math.random()*999),client:p.client||'',platform:p.platform||'linkedin',content:p.content||'',time:p.time||'',createdAt:new Date().toISOString()});postsAdded++});
+  }
+  save();renderSidebar();
+  msg.style.display='block';msg.style.color='var(--green-text)';
+  msg.textContent=`Imported: ${added} new client${added!==1?'s':''}, ${updated} updated`+(postsAdded?`, ${postsAdded} posts`:'')+'. Synced to dashboard.';
+  document.getElementById('import-input').value='';
 }
 
 function saveSetup(){

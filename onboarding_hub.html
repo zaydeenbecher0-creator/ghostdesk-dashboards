@@ -373,6 +373,24 @@ tr:hover td{background:var(--surface2)}
           </div>
         </div>
       </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-header">
+          <div class="card-title">⇄ Sync from agent</div>
+          <span class="tag tag-indigo">Notion is the source of truth</span>
+        </div>
+        <div class="alert alert-indigo">Your agents onboard clients and keep Notion current. To mirror that here, ask your agent for an <strong>Onboarding sync packet</strong>, paste the JSON below, and import — clients and their onboarding stage load straight into the tracker.</div>
+        <div class="form-full">
+          <label>Paste sync packet (JSON)</label>
+          <textarea id="oh-import-input" placeholder='{"clients":[{"name":"...","business":"ghost","contact":"...","email":"...","retainer":"1250","stage":3}]}' style="min-height:120px;font-family:monospace;font-size:12px"></textarea>
+        </div>
+        <div class="flex" style="gap:8px">
+          <button class="btn btn-primary" onclick="ohImportFromAgent()">Import &amp; merge</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('oh-import-input').value=''">Clear</button>
+        </div>
+        <div id="oh-import-msg" style="margin-top:8px;font-size:12px;display:none"></div>
+      </div>
+
     </div>
 
   </div>
@@ -618,6 +636,33 @@ function openNewClient(){
   document.getElementById('gen-client-tag').textContent='New client';
   ['g-name','g-contact','g-title','g-email','g-retainer','g-scope','g-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('g-start').value=new Date().toISOString().split('T')[0];
+}
+
+function ohImportFromAgent(){
+  const msg=document.getElementById('oh-import-msg');
+  const raw=document.getElementById('oh-import-input').value.trim();
+  if(!raw){msg.style.display='block';msg.style.color='var(--amber-text)';msg.textContent='Paste a sync packet first.';return}
+  let pkt;
+  try{pkt=JSON.parse(raw)}
+  catch(e){msg.style.display='block';msg.style.color='var(--red-text)';msg.textContent='Invalid JSON — check the packet and try again.';return}
+  let added=0,updated=0;
+  const bizMap={'Ghost Desk':'ghost','OutreachOS':'email','Resume/LinkedIn':'resume','ghost':'ghost','email':'email','resume':'resume'};
+  if(Array.isArray(pkt.clients)){
+    pkt.clients.forEach(c=>{
+      if(!c.name)return;
+      const stage=Math.max(0,Math.min(6,parseInt(c.stage)||0));
+      const checklist=[false,false,false,false,false,false];
+      for(let i=0;i<stage;i++)checklist[i]=true;
+      const rec={id:c.id||('c'+Date.now()+Math.floor(Math.random()*999)),business:bizMap[c.business]||'ghost',name:c.name,contact:c.contact||'',contactTitle:c.contactTitle||'',email:c.email||'',retainer:c.retainer||'1250',start:c.start||new Date().toISOString().split('T')[0],term:c.term||'month-to-month',scope:c.scope||'',checklist:checklist};
+      const existing=state.clients.find(x=>(x.id&&x.id===c.id)||x.name===c.name);
+      if(existing){Object.assign(existing,rec,{id:existing.id});updated++}
+      else{state.clients.push(rec);added++}
+    });
+  }
+  save();renderSidebar();
+  msg.style.display='block';msg.style.color='var(--green-text)';
+  msg.textContent=`Imported: ${added} new client${added!==1?'s':''}, ${updated} updated. Check the Onboarding Tracker.`;
+  document.getElementById('oh-import-input').value='';
 }
 
 function saveSetup(){
