@@ -723,6 +723,12 @@ function submitOrder(){
   if(!document.getElementById('o-terms').checked){err.textContent='Please accept the service terms to continue.';err.style.display='block';return}
   const subject=encodeURIComponent(`Resume & LinkedIn Order — ${name} — ${pkg}`);
   const body=encodeURIComponent(`New order received:\n\nName: ${name}\nEmail: ${email}\nCurrent title: ${title}\nTarget role: ${goal||'Not specified'}\nPackage: ${pkg}\nNotes: ${notes||'None'}\n\nPlease send intake form to: ${email}`);
+  // Send notification via Formspree (no backend needed on GitHub Pages)
+  fetch('https://formspree.io/f/zaydeenbecher0@gmail.com', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({name:name,email:email,title:title,goal:goal,package:pkg,notes:notes,_subject:`New Resume & LinkedIn Order — ${name} — ${pkg}`})
+  }).catch(()=>{}); // silent fail — mailto is backup
   window.location.href=`mailto:zaydeenbecher0@gmail.com?subject=${subject}&body=${body}`;
   document.getElementById('order-empty-state').style.display='none';
   document.getElementById('order-confirm').style.display='block';
