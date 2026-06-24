@@ -724,7 +724,7 @@ function submitOrder(){
   const subject=encodeURIComponent(`Resume & LinkedIn Order — ${name} — ${pkg}`);
   const body=encodeURIComponent(`New order received:\n\nName: ${name}\nEmail: ${email}\nCurrent title: ${title}\nTarget role: ${goal||'Not specified'}\nPackage: ${pkg}\nNotes: ${notes||'None'}\n\nPlease send intake form to: ${email}`);
   // Send notification via Formspree (no backend needed on GitHub Pages)
-  fetch('https://formspree.io/f/zaydeenbecher0@gmail.com', {
+  fetch('https://formspree.io/f/mbdvdajr', {
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
     body:JSON.stringify({name:name,email:email,title:title,goal:goal,package:pkg,notes:notes,_subject:`New Resume & LinkedIn Order — ${name} — ${pkg}`})
