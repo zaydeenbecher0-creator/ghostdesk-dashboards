@@ -732,7 +732,9 @@ function submitOrder(){
   window.location.href=`mailto:zaydeenbecher0@gmail.com?subject=${subject}&body=${body}`;
   document.getElementById('order-empty-state').style.display='none';
   document.getElementById('order-confirm').style.display='block';
-  document.getElementById('order-confirm-msg').innerHTML=`Thanks ${name}! Your order for the <strong>${pkg}</strong> package has been received.<br><br>We'll send your intake form to <strong>${email}</strong> within 2 hours. Attach your current resume and the job descriptions you're targeting — we'll have your rewrite ready within 48 hours.`;
+  const prices={'Essential — $250':'250','Professional — $450':'450','Executive — $750':'750'};
+  const amt=prices[pkg]||'250';
+  document.getElementById('order-confirm-msg').innerHTML=`Thanks ${name}! Your order for the <strong>${pkg}</strong> package has been received.<br><br><strong>Step 1 — Complete your payment:</strong><br><a href="https://paypal.me/Ghostdesk/${amt}" target="_blank" style="display:inline-block;margin:12px 0;padding:10px 20px;background:#003087;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Pay $${amt} via PayPal →</a><br><br><strong>Step 2 — Send your materials:</strong><br>Once payment is done, reply to the email we send to <strong>${email}</strong> with your current resume and target job descriptions. We'll deliver your rewrite within 48 hours.`;
 }
 
 // ── Scroll-aware nav ────────────────────────────────────────
