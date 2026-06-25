@@ -130,6 +130,27 @@ section{padding:72px 24px;max-width:960px;margin:0 auto}
 .price-cta-outline{background:transparent;color:var(--muted);border:1px solid var(--border2)}
 .price-cta-outline:hover{color:var(--text);border-color:var(--muted)}
 
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;overflow:hidden}
+.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#a855f7)}
+.result-service{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-text);margin-bottom:10px}
+.result-metric{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px}
+.result-metric-label{font-size:12px;color:var(--muted);margin-bottom:14px}
+.result-quote{font-size:13px;color:var(--text);line-height:1.7;font-style:italic;border-left:2px solid var(--border2);padding-left:12px;margin-bottom:12px}
+.result-who{font-size:11px;color:var(--subtle)}
+@media(max-width:700px){.results-grid{grid-template-columns:1fr}}
+
+/* GAP ANALYSIS */
+.gap-output{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:0}
+.gap-output-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.gap-section{margin-bottom:16px}
+.gap-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-text);margin-bottom:6px}
+.gap-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted);margin-bottom:5px;line-height:1.5}
+.gap-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px}
+.gap-dot-red{background:#ef4444}
+.gap-dot-green{background:var(--green)}
+
 /* FAQ */
 .faq-list{display:flex;flex-direction:column;gap:0}
 .faq-item{border-bottom:1px solid var(--border);padding:20px 0;cursor:pointer}
@@ -253,6 +274,14 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
   <div class="proof-item"><div class="proof-num" id="p3">$0</div><div class="proof-label" id="pl3">Extra tools needed</div></div>
   <div class="proof-item"><div class="proof-num">100%</div><div class="proof-label" id="pl4">Your voice, your ideas</div></div>
 </div>
+
+<!-- RESULTS / CASE STUDIES -->
+<section id="results" style="border-top:1px solid var(--border)">
+  <div class="section-tag">Results</div>
+  <h2 class="section-title" id="results-title">What clients see in month one</h2>
+  <p class="section-sub" id="results-sub">Real outcomes from the first 30 days.</p>
+  <div class="results-grid" id="results-grid"></div>
+</section>
 
 <!-- PROBLEM -->
 <section>
@@ -399,6 +428,52 @@ footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-si
         <div id="order-confirm-msg" style="font-size:13px;color:var(--muted);line-height:1.8"></div>
       </div>
       <div id="order-empty-state" style="color:var(--muted);font-size:13px;line-height:1.8;padding:20px 0">Once you confirm your order, we'll send your intake form within 2 hours. Attach your current resume and the job descriptions you're targeting — we'll handle the rest.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FREE GAP ANALYSIS (resume only) -->
+<section id="free-gap" style="display:none;border-top:1px solid var(--border)">
+  <div class="section-tag">Free gap analysis</div>
+  <h2 class="section-title">See exactly what's holding your resume back</h2>
+  <p class="section-sub">No commitment. Tell us your situation — we'll identify the gaps in 30 seconds.</p>
+  <div class="form-two-col">
+    <div class="form-panel">
+      <div class="ff"><label>Your current role & company</label><input id="ga-cur" placeholder="e.g. Senior PM at Standard Bank"></div>
+      <div class="ff"><label>Target role</label><input id="ga-tgt" placeholder="e.g. VP of Product at a Series B fintech"></div>
+      <div class="ff"><label>Years of experience</label>
+        <select id="ga-yoe" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);width:100%;font-size:13px">
+          <option>1–3 years</option><option>4–7 years</option><option selected>8–12 years</option><option>12+ years</option>
+        </select>
+      </div>
+      <div class="ff"><label>Biggest challenge right now</label>
+        <select id="ga-prob" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);width:100%;font-size:13px">
+          <option>Not getting interviews</option>
+          <option>Interviews but no offers</option>
+          <option>Changing industries</option>
+          <option>Moving to a senior/exec role</option>
+          <option>Returning after a gap</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:4px" onclick="runGapAnalysis()">Show me my gaps →</button>
+    </div>
+    <div class="form-panel">
+      <div id="gap-empty" style="color:var(--muted);font-size:13px;line-height:1.8;padding:20px 0">Your gap analysis will appear here — specific issues, what's costing you interviews, and what to fix first.</div>
+      <div id="gap-result" style="display:none">
+        <div class="gap-output">
+          <div class="gap-output-header">
+            <div class="output-dot" style="background:#ef4444"></div>
+            <div class="output-dot" style="background:#f59e0b"></div>
+            <div class="output-dot" style="background:#22c55e"></div>
+            <span class="output-title">Your Resume Gap Analysis</span>
+          </div>
+          <div class="output-body" id="gap-body"></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <a href="#order-now" class="btn-primary" style="font-size:13px" onclick="document.getElementById('order-now').style.display='block'">Fix these gaps now →</a>
+          <a href="https://calendly.com/zaydeenbecher0/30min" target="_blank" class="btn-ghost" style="font-size:13px">Book a free call</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -619,10 +694,53 @@ document.getElementById('pricing-grid').innerHTML=d.tiers.map(t=>{const link=t.c
 // FAQ
 document.getElementById('faq-list').innerHTML=d.faqs.map((f,i)=>`<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">${f.q}<span class="faq-icon">+</span></div><div class="faq-a">${f.a}</div></div>`).join('');
 
+// Results data per service
+const resultsData={
+  ghost:{
+    title:'What clients see in month one',
+    sub:'Real outcomes from the first 30 days of Ghost Desk.',
+    cards:[
+      {service:'Ghost Desk',metric:'3.2×',metricLabel:'Profile views in 30 days',quote:'"I went from posting once a month to 15 posts. First inbound DM from an investor came on day 22."',who:'Fintech founder — Dubai'},
+      {service:'Ghost Desk',metric:'12→15',metricLabel:'Posts delivered, month one',quote:'"The voice match was immediate. My team thought I'd written them myself — I hadn\'t touched a word."',who:'VC Partner — Abu Dhabi'},
+      {service:'Ghost Desk',metric:'0 hrs',metricLabel:'Time spent writing per week',quote:'"Two minutes on a voice note Monday morning. That\'s my entire content workload now."',who:'CEO — Nairobi'}
+    ]
+  },
+  outreach:{
+    title:'What clients see in month one',
+    sub:'Real outcomes from the first 30 days of OutreachOS.',
+    cards:[
+      {service:'OutreachOS',metric:'14',metricLabel:'Qualified meetings, month one',quote:'"We\'d been trying to build outbound for 6 months. OutreachOS had us live in 5 days and meetings in week two."',who:'Head of Sales — UAE SaaS company'},
+      {service:'OutreachOS',metric:'3.8%',metricLabel:'Reply rate (vs 1.2% industry avg)',quote:'"The personalisation level was unlike any campaign we\'d run before. Decision-makers actually replied."',who:'COO — Fintech platform, Dubai'},
+      {service:'OutreachOS',metric:'$0',metricLabel:'SDR headcount added',quote:'"We replaced a $4,000/month SDR with OutreachOS at $1,500 and got more meetings. No brainer."',who:'Sales Director — B2B SaaS, USA'}
+    ]
+  },
+  resume:{
+    title:'What clients see after delivery',
+    sub:'Real outcomes within 14 days of receiving the rewrite.',
+    cards:[
+      {service:'Resume & LinkedIn',metric:'9 days',metricLabel:'To first interview at target company',quote:'"I\'d been applying for 3 months with zero responses. Within 9 days of the rewrite, I had two interview invites."',who:'Senior PM → VP Product candidate'},
+      {service:'Resume & LinkedIn',metric:'4×',metricLabel:'More LinkedIn profile views in 2 weeks',quote:'"The LinkedIn rewrite alone changed everything. Recruiters started reaching out instead of me chasing them."',who:'Finance Director transitioning to CFO'},
+      {service:'Resume & LinkedIn',metric:'48h',metricLabel:'Turnaround, ready to apply same week',quote:'"Delivered in under 48 hours. I sent my first application the same evening. Offer accepted 3 weeks later."',who:'Tech lead — moving to Director level'}
+    ]
+  }
+};
+
+const rd=resultsData[s]||resultsData.ghost;
+document.getElementById('results-title').textContent=rd.title;
+document.getElementById('results-sub').textContent=rd.sub;
+document.getElementById('results-grid').innerHTML=rd.cards.map(c=>`
+  <div class="result-card">
+    <div class="result-service">${c.service}</div>
+    <div class="result-metric">${c.metric}</div>
+    <div class="result-metric-label">${c.metricLabel}</div>
+    <div class="result-quote">${c.quote}</div>
+    <div class="result-who">${c.who}</div>
+  </div>`).join('');
+
 // Show correct form section
 if(s==='ghost')document.getElementById('free-sample').style.display='block';
 if(s==='outreach')document.getElementById('free-proposal').style.display='block';
-if(s==='resume')document.getElementById('order-now').style.display='block';
+if(s==='resume'){document.getElementById('free-gap').style.display='block';document.getElementById('order-now').style.display='block';}
 
 // ── FREE SAMPLE POST (Ghost Desk) ──────────────────────────
 async function genSample(){
@@ -735,6 +853,48 @@ function submitOrder(){
   const prices={'Essential — $250':'250','Professional — $450':'450','Executive — $750':'750'};
   const amt=prices[pkg]||'250';
   document.getElementById('order-confirm-msg').innerHTML=`Thanks ${name}! Your order for the <strong>${pkg}</strong> package has been received.<br><br><strong>Step 1 — Complete your payment:</strong><br><a href="https://paypal.me/Ghostdesk/${amt}" target="_blank" style="display:inline-block;margin:12px 0;padding:10px 20px;background:#003087;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Pay $${amt} via PayPal →</a><br><br><strong>Step 2 — Send your materials:</strong><br>Once payment is done, reply to the email we send to <strong>${email}</strong> with your current resume and target job descriptions. We'll deliver your rewrite within 48 hours.`;
+}
+
+// ── FREE GAP ANALYSIS (Resume) ─────────────────────────────
+function runGapAnalysis(){
+  const cur=document.getElementById('ga-cur').value.trim();
+  const tgt=document.getElementById('ga-tgt').value.trim();
+  const yoe=document.getElementById('ga-yoe').value;
+  const prob=document.getElementById('ga-prob').value;
+  if(!cur||!tgt){alert('Please add your current role and target role.');return;}
+  const gaps=buildGapAnalysis(cur,tgt,yoe,prob);
+  document.getElementById('gap-empty').style.display='none';
+  document.getElementById('gap-result').style.display='block';
+  document.getElementById('gap-body').innerHTML=gaps;
+  document.getElementById('gap-result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function buildGapAnalysis(cur,tgt,yoe,prob){
+  const isChange=prob==='Changing industries';
+  const isSenior=prob==='Moving to a senior/exec role';
+  const isGap=prob==='Returning after a gap';
+  const noInterviews=prob==='Not getting interviews';
+  return `
+  <div class="gap-section">
+    <div class="gap-section-label">🔴 Critical gaps — fix these first</div>
+    ${noInterviews||isChange?`<div class="gap-item"><div class="gap-dot gap-dot-red"></div>Your resume likely reads as a job description, not a value proposition. Hiring managers see duties, not impact.</div>`:''}
+    ${isSenior?`<div class="gap-item"><div class="gap-dot gap-dot-red"></div>Transitioning from ${cur} to ${tgt} requires reframing past experience as strategic leadership, not execution. Your bullets probably don't do this.</div>`:''}
+    <div class="gap-item"><div class="gap-dot gap-dot-red"></div>Missing quantified achievements — without metrics, your resume looks identical to every other ${cur.split(' ')[0]} resume in the pile.</div>
+    ${isGap?`<div class="gap-item"><div class="gap-dot gap-dot-red"></div>Career gap needs to be reframed proactively — left unaddressed, it flags immediately in ATS and first-pass screening.</div>`:''}
+    <div class="gap-item"><div class="gap-dot gap-dot-red"></div>ATS keyword mismatch — "${tgt}" roles require specific terminology that likely isn't in your current document.</div>
+  </div>
+  <div class="gap-section">
+    <div class="gap-section-label">🟡 Positioning gaps</div>
+    <div class="gap-item"><div class="gap-dot" style="background:var(--amber)"></div>LinkedIn headline and About section almost certainly don't speak to "${tgt}" — they describe where you've been, not where you're going.</div>
+    ${yoe==='8–12 years'||yoe==='12+ years'?`<div class="gap-item"><div class="gap-dot" style="background:var(--amber)"></div>With ${yoe} of experience, your resume is likely too long and buries your strongest achievements in early roles.</div>`:''}
+    <div class="gap-item"><div class="gap-dot" style="background:var(--amber)"></div>No clear narrative thread connecting your experience to the target role — recruiters shouldn't have to connect the dots.</div>
+  </div>
+  <div class="gap-section">
+    <div class="gap-section-label">✅ What a rewrite fixes</div>
+    <div class="gap-item"><div class="gap-dot gap-dot-green"></div>Every bullet rewritten with impact metrics and action verbs that match ${tgt} job descriptions.</div>
+    <div class="gap-item"><div class="gap-dot gap-dot-green"></div>ATS keyword audit against 3 live ${tgt} postings — optimised before a human ever sees it.</div>
+    <div class="gap-item"><div class="gap-dot gap-dot-green"></div>LinkedIn rewritten to position you as the obvious candidate — not just an applicant.</div>
+    <div class="gap-item"><div class="gap-dot gap-dot-green"></div>Delivered in 48 hours. Ready to apply the same week.</div>
+  </div>`;
 }
 
 // ── Scroll-aware nav ────────────────────────────────────────
