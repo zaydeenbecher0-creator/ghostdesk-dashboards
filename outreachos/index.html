@@ -113,6 +113,9 @@
     transition:opacity .2s ease, transform .2s ease, visibility .2s;
     z-index:80;
   }
+  .nav-drop-menu::before{
+    content:""; position:absolute; left:0; right:0; top:-18px; height:18px;
+  }
   .nav-drop:hover .nav-drop-menu, .nav-drop:focus-within .nav-drop-menu{
     opacity:1; visibility:visible; pointer-events:auto; transform:translateX(-50%) translateY(0);
   }
