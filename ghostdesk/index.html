@@ -372,10 +372,13 @@
   }
   .plan:hover .plan-price{ animation:g-price-pop .6s cubic-bezier(.34,1.56,.64,1) forwards; }
   @keyframes g-price-pop{
-    0%{ transform:scale(1) rotate(0deg); color:#fff; text-shadow:none; }
-    35%{ transform:scale(1.2) rotate(-2deg); color:var(--purple-2); text-shadow:0 0 24px rgba(155,125,255,0.65); }
-    65%{ transform:scale(1.02) rotate(1deg); }
-    100%{ transform:scale(1.1) rotate(0deg); color:var(--purple-2); text-shadow:0 0 16px rgba(155,125,255,0.45); }
+    0%{ transform:scale(1) translateY(0); color:#fff; text-shadow:none; }
+    25%{ transform:scale(1.16) translateY(-12px); color:var(--purple-2); text-shadow:0 0 24px rgba(155,125,255,0.65); }
+    45%{ transform:scale(1.05) translateY(3px); }
+    62%{ transform:scale(1.11) translateY(-6px); }
+    78%{ transform:scale(1.07) translateY(1px); }
+    90%{ transform:scale(1.095) translateY(-2px); }
+    100%{ transform:scale(1.1) translateY(0); color:var(--purple-2); text-shadow:0 0 16px rgba(155,125,255,0.45); }
   }
   .plan-price span{ font-size:14px; font-family:var(--font-sans); font-weight:400; color:var(--text-faint); transition:color .3s ease; }
   .plan:hover .plan-price span{ color:var(--text-dim); }
