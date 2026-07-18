@@ -144,26 +144,8 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 
 /* ---------- transition band: Midnight -> Slate, with a rising horizon ---------- */
 .stage-transition{
-  position:relative;width:100%;height:34vh;min-height:230px;
-  background:linear-gradient(180deg, var(--midnight) 0%, #2B2E36 100%);
-  overflow:hidden;
-}
-.horizon-orb{
-  position:absolute;left:50%;top:70px;width:1700px;height:1700px;
-  transform:translateX(-50%);border-radius:50%;
-  background:radial-gradient(circle at 50% 22%, #FFFFFF 0%, var(--bg) 68%);
-  box-shadow:0 -20px 90px rgba(255,255,255,.16);
-}
-.horizon-mark{
-  position:relative;width:100%;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;
-  padding-top:18px;
-}
-.horizon-line{width:1px;height:46px;background:var(--gold-dim);}
-.horizon-glyph{
-  width:32px;height:32px;border-radius:50%;border:1px solid var(--gold-dim);
-  display:flex;align-items:center;justify-content:center;margin-top:-1px;
-  font-family:var(--serif);font-style:italic;color:var(--gold);font-size:14px;
+  position:relative;width:100%;height:40vh;min-height:260px;
+  background:linear-gradient(180deg, var(--midnight) 0%, #4A4E58 45%, var(--bg) 100%);
 }
 .ticker{
   font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--hero-text-dim);
@@ -448,13 +430,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
     </div>
   </section>
 
-  <div class="stage-transition">
-    <div class="horizon-orb"></div>
-  </div>
-  <div class="horizon-mark">
-    <span class="horizon-line"></span>
-    <span class="horizon-glyph">G</span>
-  </div>
+  <div class="stage-transition"></div>
 
   <section class="section" id="problem">
     <div class="eyebrow reveal">The Gap</div>
