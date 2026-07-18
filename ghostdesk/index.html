@@ -10,14 +10,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0B0D;
-  --surface:#101215;
-  --surface-2:#16181C;
-  --border:rgba(255,255,255,.09);
-  --border-strong:rgba(255,255,255,.16);
-  --text:#F4F3EE;
-  --text-dim:#A6A49E;
-  --text-faint:#69675F;
+  --bg:#5C5F68;
+  --surface:#6E7179;
+  --surface-2:#787B84;
+  --border:rgba(255,255,255,.16);
+  --border-strong:rgba(255,255,255,.28);
+  --text:#FAFAFA;
+  --text-dim:#D7D9DE;
+  --text-faint:#AFB2BB;
   --sapphire:#2563EB;
   --sapphire-light:#60A5FA;
   --gold:#C9A96B;
@@ -33,11 +33,11 @@ body{
   font-family:var(--sans);
   background-color:var(--bg);
   background-image:
-    radial-gradient(ellipse 1100px 900px at 15% 10%, rgba(37,99,235,0.2), transparent 60%),
-    radial-gradient(ellipse 1000px 800px at 85% 90%, rgba(37,99,235,0.16), transparent 62%),
-    radial-gradient(ellipse 800px 700px at 90% 15%, rgba(96,165,250,0.1), transparent 60%),
-    linear-gradient(155deg, rgba(255,255,255,0.05) 0%, transparent 20%, transparent 75%, rgba(255,255,255,0.03) 100%),
-    repeating-linear-gradient(100deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    radial-gradient(ellipse 1100px 900px at 15% 10%, rgba(37,99,235,0.28), transparent 60%),
+    radial-gradient(ellipse 1000px 800px at 85% 90%, rgba(16,185,129,0.18), transparent 62%),
+    radial-gradient(ellipse 800px 700px at 90% 15%, rgba(96,165,250,0.16), transparent 60%),
+    linear-gradient(155deg, rgba(255,255,255,0.07) 0%, transparent 20%, transparent 75%, rgba(255,255,255,0.05) 100%),
+    repeating-linear-gradient(100deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
   background-attachment:fixed;
   color:var(--text);
   line-height:1.5;
@@ -71,7 +71,7 @@ body::before{
   position:fixed;top:0;left:0;right:0;z-index:200;
   display:flex;align-items:center;justify-content:space-between;
   padding:22px clamp(20px,4vw,56px);
-  background:rgba(10,11,13,.72);
+  background:rgba(92,95,104,.75);
   backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
 }
@@ -221,7 +221,7 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
   --card-2:#787B84;
   --card-border:rgba(255,255,255,.18);
 }
-.pricing-blue-fade{width:100%;background:linear-gradient(180deg, rgba(37,99,235,0.1) 0%, rgba(15,30,61,0.55) 30%, var(--bg) 85%);}
+.pricing-blue-fade{width:100%;background:linear-gradient(180deg, rgba(37,99,235,0.22) 0%, rgba(16,185,129,0.1) 45%, var(--bg) 85%);}
 .pricing-grid{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 @media (max-width:900px){.pricing-grid{grid-template-columns:1fr;}}
 .plan-wrap{position:relative;transition:z-index 0s;}
