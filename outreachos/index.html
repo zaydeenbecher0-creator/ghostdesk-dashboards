@@ -160,16 +160,20 @@
   .eyebrow.center{ justify-content:center; }
   .eyebrow.center::before{ display:none; }
 
+  .badge-row{
+    display:flex; align-items:center; justify-content:center;
+    gap:10px; flex-wrap:wrap; margin-bottom:28px;
+  }
   .badge-pill{
-    display:inline-flex; align-items:center; gap:9px;
+    display:inline-flex; align-items:center; gap:8px;
     background:var(--purple-deep);
     border:1px solid rgba(16,185,129,0.35);
     color:#A7F3D0;
-    font-size:13px; font-weight:600;
-    padding:8px 16px; border-radius:999px;
-    margin-bottom:28px;
+    font-size:12.5px; font-weight:600;
+    padding:7px 14px; border-radius:999px;
+    white-space:nowrap;
   }
-  .badge-dot{ width:6px; height:6px; border-radius:50%; background:var(--purple-2); box-shadow:0 0 8px var(--purple-2); }
+  .badge-dot{ width:6px; height:6px; border-radius:50%; background:var(--purple-2); box-shadow:0 0 8px var(--purple-2); flex-shrink:0; }
 
   h1,h2,h3{ font-family:var(--font-sans); font-weight:800; letter-spacing:-0.02em; color:#fff; }
   em.accent{
@@ -902,7 +906,12 @@
   <!-- HERO -->
   <section class="hero" id="overview">
     <div class="wrap hero-inner">
-      <span class="badge-pill"><span class="badge-dot"></span>B2B Cold Email Lead-Gen · Verified Leads</span>
+      <div class="badge-row">
+        <span class="badge-pill"><span class="badge-dot"></span>B2B</span>
+        <span class="badge-pill">Cold Email</span>
+        <span class="badge-pill">Lead-Gen</span>
+        <span class="badge-pill">Verified Leads</span>
+      </div>
       <h1 class="hero-h">A full pipeline of qualified leads,<br><em class="accent">every month</em></h1>
       <p class="hero-lede">We find your ideal buyers, write personalised cold email sequences, and deliver booked calls to your calendar, without you lifting a finger.</p>
       <div class="hero-ctas">
