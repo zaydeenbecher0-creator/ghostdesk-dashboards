@@ -31,7 +31,11 @@
 html{scroll-behavior:smooth;background:var(--bg);}
 body{
   font-family:var(--sans);
-  background:var(--bg);
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 900px 640px at 50% -8%, rgba(37,99,235,0.18), transparent 62%),
+    linear-gradient(155deg, rgba(255,255,255,0.05) 0%, transparent 20%, transparent 75%, rgba(255,255,255,0.03) 100%),
+    repeating-linear-gradient(100deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
   color:var(--text);
   line-height:1.5;
   overflow-x:hidden;
@@ -219,6 +223,7 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
   --card-2:#787B84;
   --card-border:rgba(255,255,255,.18);
 }
+.pricing-blue-fade{width:100%;background:linear-gradient(180deg, rgba(37,99,235,0.1) 0%, rgba(15,30,61,0.55) 30%, var(--bg) 85%);}
 .pricing-grid{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 @media (max-width:900px){.pricing-grid{grid-template-columns:1fr;}}
 .plan-wrap{position:relative;transition:z-index 0s;}
@@ -476,6 +481,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
     </div>
   </section>
 
+  <div class="pricing-blue-fade">
   <section class="section" id="terms">
     <div class="eyebrow reveal">Terms</div>
     <h2 class="section-title reveal">Three desks. Month to month.</h2>
@@ -527,6 +533,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
       </div>
     </div>
   </section>
+  </div>
 
   <div class="bridge-line reveal">
     <div class="txt"><span class="tick"></span>Also from this desk — OutreachOS: pipeline infrastructure for B2B agencies</div>
