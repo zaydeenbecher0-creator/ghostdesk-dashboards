@@ -33,9 +33,12 @@ body{
   font-family:var(--sans);
   background-color:var(--bg);
   background-image:
-    radial-gradient(ellipse 900px 640px at 50% -8%, rgba(37,99,235,0.18), transparent 62%),
+    radial-gradient(ellipse 1100px 900px at 15% 10%, rgba(37,99,235,0.2), transparent 60%),
+    radial-gradient(ellipse 1000px 800px at 85% 90%, rgba(37,99,235,0.16), transparent 62%),
+    radial-gradient(ellipse 800px 700px at 90% 15%, rgba(96,165,250,0.1), transparent 60%),
     linear-gradient(155deg, rgba(255,255,255,0.05) 0%, transparent 20%, transparent 75%, rgba(255,255,255,0.03) 100%),
     repeating-linear-gradient(100deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  background-attachment:fixed;
   color:var(--text);
   line-height:1.5;
   overflow-x:hidden;
@@ -84,22 +87,6 @@ body::before{
 }
 .topbar-cta:hover{border-color:var(--gold);background:rgba(201,169,107,.08);color:var(--gold);}
 
-/* ---------- index rail ---------- */
-.index-rail{
-  position:fixed;left:clamp(16px,3vw,44px);top:50%;transform:translateY(-50%);
-  z-index:150;display:flex;flex-direction:column;gap:22px;
-}
-.index-rail a{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--text-faint);
-  transition:color .25s;
-}
-.index-rail a .tick{width:14px;height:1px;background:var(--text-faint);transition:background .25s,width .25s;}
-.index-rail a .lbl{opacity:0;transform:translateX(-6px);transition:opacity .25s,transform .25s;white-space:nowrap;}
-.index-rail a:hover .lbl,.index-rail a.active .lbl{opacity:1;transform:translateX(0);}
-.index-rail a.active{color:var(--sapphire-light);}
-.index-rail a.active .tick{background:var(--gold);width:22px;}
-@media (max-width:1100px){.index-rail{display:none;}}
 
 /* ---------- shared section rhythm ---------- */
 .section{padding:150px clamp(24px,6vw,80px);max-width:1180px;margin:0 auto;position:relative;}
@@ -391,15 +378,6 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
   <a class="topbar-cta" href="https://calendly.com/zaydeenbecher0/30min" target="_blank" rel="noopener">Book a desk review</a>
 </header>
 
-<nav class="index-rail" id="indexRail">
-  <a href="#overview" data-target="overview"><span class="tick"></span><span class="lbl">01 — Overview</span></a>
-  <a href="#problem" data-target="problem"><span class="tick"></span><span class="lbl">02 — The Gap</span></a>
-  <a href="#method" data-target="method"><span class="tick"></span><span class="lbl">03 — The Method</span></a>
-  <a href="#proof" data-target="proof"><span class="tick"></span><span class="lbl">04 — Proof</span></a>
-  <a href="#terms" data-target="terms"><span class="tick"></span><span class="lbl">05 — Terms</span></a>
-  <a href="#faq" data-target="faq"><span class="tick"></span><span class="lbl">06 — Questions</span></a>
-</nav>
-
 <main>
 
   <section class="hero" id="overview">
@@ -652,20 +630,6 @@ const countObserver=new IntersectionObserver((entries)=>{
   });
 },{threshold:.5});
 document.querySelectorAll('.ledger-num').forEach(el=>countObserver.observe(el));
-
-// index rail active tracking
-const railLinks=document.querySelectorAll('.index-rail a');
-const sections=['overview','problem','method','proof','terms','faq'].map(id=>document.getElementById(id)).filter(Boolean);
-function updateRail(){
-  let activeId=sections[0]?.id;
-  for(const sec of sections){
-    const r=sec.getBoundingClientRect();
-    if(r.top<window.innerHeight*0.5) activeId=sec.id;
-  }
-  railLinks.forEach(a=>a.classList.toggle('active', a.dataset.target===activeId));
-}
-window.addEventListener('scroll',updateRail,{passive:true});
-updateRail();
 
 // waveform bars
 const waveform=document.getElementById('waveform');
