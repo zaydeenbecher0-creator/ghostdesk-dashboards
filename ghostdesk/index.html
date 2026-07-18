@@ -161,27 +161,38 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 .ledger-item p{color:var(--text-dim);font-size:15.5px;max-width:560px;line-height:1.7;}
 @media (max-width:600px){.ledger-item{grid-template-columns:1fr;gap:8px;}}
 
-/* ---------- pin reveal (signature interaction) ---------- */
+/* ---------- pin reveal (signature interaction: redline edit) ---------- */
 .pin-wrap{height:260vh;position:relative;}
 .pin-stage{
   position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   overflow:hidden;
 }
-.pin-eyebrow{position:absolute;top:130px;left:50%;transform:translateX(-50%);text-align:center;}
-.pin-content{max-width:760px;padding:0 24px;text-align:center;}
-.waveform{display:flex;align-items:center;justify-content:center;gap:4px;height:70px;margin-bottom:34px;}
-.waveform .bar{width:4px;background:var(--sapphire-light);border-radius:2px;transition:opacity .4s;}
+.pin-progress{
+  position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);
+}
+.pin-progress-fill{height:100%;width:0%;background:var(--gold);box-shadow:0 0 10px rgba(201,169,107,.6);}
+.pin-content{max-width:760px;padding:0 24px;text-align:center;position:relative;}
+.pin-phase{
+  transition:opacity .35s ease, transform .35s ease;
+}
+.pin-phase#phaseFinal{
+  position:absolute;top:50%;left:0;right:0;transform:translateY(calc(-50% + 24px));opacity:0;pointer-events:none;
+}
+.waveform{display:flex;align-items:center;justify-content:center;gap:4px;height:70px;margin-bottom:34px;transition:transform .4s ease;}
+.waveform .bar{width:4px;background:var(--sapphire-light);border-radius:2px;transition:opacity .4s,height .4s ease;}
 .pin-label{font-family:var(--mono);font-size:12px;color:var(--text-faint);letter-spacing:.05em;margin-bottom:30px;}
 .pin-raw{
   font-family:var(--mono);font-size:16px;color:var(--text-dim);line-height:1.8;
-  transition:opacity .3s;
+}
+.strike-word{position:relative;color:var(--text-dim);--w:0%;}
+.strike-word::after{
+  content:"";position:absolute;left:0;top:50%;height:1px;width:var(--w);
+  background:var(--gold);
 }
 .pin-final{
   font-family:var(--serif);font-style:italic;font-weight:500;
   font-size:clamp(24px,3.2vw,38px);line-height:1.4;color:var(--text);
-  transition:opacity .3s;
 }
-.pin-arrow{margin:26px 0;font-family:var(--mono);font-size:12px;color:var(--gold);letter-spacing:.1em;transition:opacity .3s;}
 
 /* ---------- proof (redacted ledger entry) ---------- */
 .proof-card{
@@ -421,17 +432,25 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
     </div>
   </section>
 
+  <section class="section" style="padding-bottom:0;">
+    <div class="eyebrow reveal">The Method</div>
+    <h2 class="section-title reveal">One voice note. Edited on the desk.</h2>
+    <p class="section-sub reveal">Scroll to watch a real capture become a finished post — nothing hidden, nothing dramatized.</p>
+  </section>
+
   <div class="pin-wrap" id="method">
     <div class="pin-stage">
-      <div class="pin-eyebrow">
-        <div class="eyebrow" style="margin-bottom:0;">The Method</div>
-      </div>
+      <div class="pin-progress"><div class="pin-progress-fill" id="pinProgressFill"></div></div>
       <div class="pin-content">
-        <div class="pin-label" id="pinLabel">voice_note_042.m4a · 1:58 · recorded 06:40 DIFC</div>
-        <div class="waveform" id="waveform"></div>
-        <p class="pin-raw" id="pinRaw">"I keep getting asked why we're not raising a bigger round right now. Honestly — I don't want to answer to five more people about decisions I can make in a week."</p>
-        <div class="pin-arrow" id="pinArrow">— becomes —</div>
-        <p class="pin-final" id="pinFinal">Everyone assumes founders want the biggest round available.<br>Some of us want the smallest one that keeps the decisions ours.</p>
+        <div class="pin-phase" id="phaseRaw">
+          <div class="pin-label" id="pinLabel">voice_note_042.m4a · 1:58 · recorded 06:40 DIFC</div>
+          <div class="waveform" id="waveform"></div>
+          <p class="pin-raw" id="pinRaw">"I keep getting asked why we're not raising a bigger round right now. Honestly — I don't want to answer to <span class="strike-word" id="strikeWord">five more people</span> about decisions I can make in a week."</p>
+        </div>
+        <div class="pin-phase" id="phaseFinal">
+          <div class="pin-label" id="pinFinalLabel">edited_post.txt · approved 07:02 DIFC</div>
+          <p class="pin-final" id="pinFinal">Everyone assumes founders want the biggest round available.<br>Some of us want the smallest one that keeps the decisions ours.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -643,15 +662,14 @@ for(let i=0;i<28;i++){
   bars.push(b);
 }
 
-// pin-reveal scroll math: waveform+raw -> arrow -> final serif line
+// pin-reveal scroll math: redline edit — raw capture is struck through and
+// cut cleanly (no overlap) before the finished post takes its place.
 const pinWrap=document.getElementById('method');
-const pinRaw=document.getElementById('pinRaw');
-const pinFinal=document.getElementById('pinFinal');
-const pinArrow=document.getElementById('pinArrow');
+const phaseRaw=document.getElementById('phaseRaw');
+const phaseFinal=document.getElementById('phaseFinal');
 const pinLabel=document.getElementById('pinLabel');
-pinFinal.style.opacity=0;
-pinFinal.style.position='absolute';
-pinArrow.style.opacity=0;
+const strikeWord=document.getElementById('strikeWord');
+const progressFill=document.getElementById('pinProgressFill');
 
 function updatePin(){
   const rect=pinWrap.getBoundingClientRect();
@@ -659,27 +677,43 @@ function updatePin(){
   if(total<=0) return;
   let progress=(-rect.top)/total;
   progress=Math.max(0,Math.min(1,progress));
+  progressFill.style.width=(progress*100)+'%';
 
-  // stage transitions: 0-0.35 hold raw, 0.35-0.55 crossfade, 0.55-1 hold final
-  let rawOpacity, finalOpacity, waveOpacity, arrowOpacity;
-  if(progress<0.35){
-    rawOpacity=1; waveOpacity=1; arrowOpacity=0; finalOpacity=0;
-  } else if(progress<0.6){
-    const t=(progress-0.35)/0.25;
-    rawOpacity=1-t; waveOpacity=1-t; arrowOpacity=Math.min(1,t*2); finalOpacity=t;
+  // 0.00–0.32 raw held · 0.32–0.45 raw cuts out (strike sweeps) · 0.45–0.55 blank beat · 0.55–0.68 final cuts in · 0.68–1 final held
+  let rawOpacity, rawShift, waveScale, finalOpacity, finalShift, strikeW;
+
+  if(progress<0.32){
+    rawOpacity=1; rawShift=0; waveScale=1; strikeW=0;
+  } else if(progress<0.45){
+    const t=(progress-0.32)/0.13;
+    rawOpacity=1-t; rawShift=-18*t; waveScale=1-0.85*t; strikeW=Math.min(100,t*140);
   } else {
-    rawOpacity=0; waveOpacity=0; arrowOpacity=1; finalOpacity=1;
+    rawOpacity=0; rawShift=-18; waveScale=0.15; strikeW=100;
   }
-  pinRaw.style.opacity=rawOpacity;
-  waveform.style.opacity=waveOpacity;
-  pinLabel.style.opacity=Math.max(rawOpacity,0.15);
-  pinArrow.style.opacity=arrowOpacity;
-  pinFinal.style.opacity=finalOpacity;
-  pinFinal.style.position=finalOpacity>0.05?'relative':'absolute';
+
+  if(progress<0.55){
+    finalOpacity=0; finalShift=24;
+  } else if(progress<0.68){
+    const t=(progress-0.55)/0.13;
+    finalOpacity=t; finalShift=24*(1-t);
+  } else {
+    finalOpacity=1; finalShift=0;
+  }
+
+  phaseRaw.style.opacity=rawOpacity;
+  phaseRaw.style.transform='translateY('+rawShift+'px)';
+  phaseRaw.style.pointerEvents=rawOpacity>0.05?'auto':'none';
+  pinLabel.style.opacity=Math.max(rawOpacity,0.1);
+  strikeWord.style.setProperty('--w',strikeW+'%');
+  waveform.style.transform='scaleY('+waveScale+')';
+
+  phaseFinal.style.opacity=finalOpacity;
+  phaseFinal.style.transform='translateY(calc(-50% + '+finalShift+'px))';
+  phaseFinal.style.pointerEvents=finalOpacity>0.05?'auto':'none';
 
   bars.forEach((b,i)=>{
     const idle=0.55+0.45*Math.sin((Date.now()/500)+i);
-    b.style.opacity=waveOpacity*idle;
+    b.style.opacity=Math.max(0.15,waveScale)*idle;
   });
 }
 window.addEventListener('scroll',updatePin,{passive:true});
