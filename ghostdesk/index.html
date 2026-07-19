@@ -250,8 +250,8 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 .pin-progress-fill{height:100%;width:0%;background:var(--gold);box-shadow:0 0 10px rgba(201,169,107,.6);}
 .pin-tint{
   position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;
-  background:radial-gradient(ellipse 90% 70% at 50% 50%, rgba(59,91,219,.32) 0%, rgba(30,58,138,.24) 45%, transparent 75%);
-  transition:opacity .1s linear;
+  background:var(--royal);
+  transition:opacity .15s linear;
 }
 .pin-content{max-width:760px;padding:0 24px;text-align:center;position:relative;z-index:1;}
 .pin-phase{
@@ -271,31 +271,39 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
   content:"";position:absolute;left:0;top:50%;height:1px;width:var(--w);
   background:var(--gold);
 }
+#phaseFinal .pin-label{color:var(--hero-text-dim);}
 .pin-final{
   font-family:var(--serif);font-style:italic;font-weight:500;
-  font-size:clamp(24px,3.2vw,38px);line-height:1.4;color:var(--text);
+  font-size:clamp(24px,3.2vw,38px);line-height:1.4;color:var(--hero-text);
 }
 
-/* ---------- proof (redacted ledger entry) ---------- */
+/* ---------- proof (redacted ledger entry) — carries the blue through from Method, resolves to paper at Terms ---------- */
+.stage-blue{
+  width:100%;
+  background:linear-gradient(180deg, var(--royal) 0%, var(--royal) 80%, var(--bg) 100%);
+}
+#proof .eyebrow{color:var(--hero-gold);}
+#proof .section-title{color:var(--hero-text);}
+#proof .section-sub{color:var(--hero-text-dim);}
 .proof-card{
-  margin-top:56px;border:1px solid var(--border-strong);background:var(--surface);
+  margin-top:56px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);
   position:relative;
 }
 .proof-head{
   display:flex;justify-content:space-between;align-items:center;
-  padding:18px 26px;border-bottom:1px solid var(--border);
-  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--text-faint);
+  padding:18px 26px;border-bottom:1px solid rgba(255,255,255,.16);
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--hero-text-dim);
 }
 .stamp{
-  border:1px solid var(--gold-dim);color:var(--gold);padding:4px 10px;letter-spacing:.08em;
+  border:1px solid var(--gold-dim);color:var(--hero-gold);padding:4px 10px;letter-spacing:.08em;
   transform:rotate(-2deg);font-size:10px;
 }
 .proof-body{padding:34px 26px;display:grid;grid-template-columns:1fr;gap:26px;}
-.proof-block .k{font-family:var(--mono);font-size:11px;color:var(--text-faint);letter-spacing:.08em;margin-bottom:10px;}
-.proof-block.raw p{font-family:var(--mono);font-size:14.5px;color:var(--text-dim);line-height:1.85;}
-.redact{background:var(--border-strong);color:transparent;border-radius:2px;padding:0 2px;user-select:none;}
-.proof-block.final p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6;color:var(--text);}
-.proof-divider{height:1px;background:var(--border);}
+.proof-block .k{font-family:var(--mono);font-size:11px;color:var(--hero-text-dim);letter-spacing:.08em;margin-bottom:10px;}
+.proof-block.raw p{font-family:var(--mono);font-size:14.5px;color:var(--hero-text-dim);line-height:1.85;}
+.redact{background:rgba(255,255,255,.24);color:transparent;border-radius:2px;padding:0 2px;user-select:none;}
+.proof-block.final p{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.6;color:var(--hero-text);}
+.proof-divider{height:1px;background:rgba(255,255,255,.16);}
 
 /* ---------- pricing: quiet editorial rate card, no SaaS flourish ---------- */
 .pricing-grid{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border-strong);}
@@ -507,6 +515,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
     </div>
   </div>
 
+  <div class="stage-blue">
   <section class="section" id="proof">
     <div class="eyebrow reveal">Proof</div>
     <h2 class="section-title reveal">No client logos. On purpose.</h2>
@@ -529,6 +538,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
       </div>
     </div>
   </section>
+  </div>
 
   <section class="section" id="terms">
     <div class="eyebrow reveal">Private Desks</div>
@@ -730,13 +740,11 @@ function updatePin(){
   progress=Math.max(0,Math.min(1,progress));
   progressFill.style.width=(progress*100)+'%';
 
-  // blue tint washes in right as the voice note starts becoming the post, and fades back out once it settles
+  // blue washes in solid right as the voice note starts becoming the post, then holds (carries into Proof below)
   let tintOpacity;
-  if(progress<0.26){ tintOpacity=0; }
-  else if(progress<0.42){ tintOpacity=(progress-0.26)/0.16; }
-  else if(progress<0.58){ tintOpacity=1; }
-  else if(progress<0.76){ tintOpacity=1-(progress-0.58)/0.18; }
-  else{ tintOpacity=0; }
+  if(progress<0.3){ tintOpacity=0; }
+  else if(progress<0.48){ tintOpacity=(progress-0.3)/0.18; }
+  else{ tintOpacity=1; }
   pinTint.style.opacity=tintOpacity;
 
   // 0.00–0.32 raw held · 0.32–0.45 raw cuts out (strike sweeps) · 0.45–0.55 blank beat · 0.55–0.68 final cuts in · 0.68–1 final held
