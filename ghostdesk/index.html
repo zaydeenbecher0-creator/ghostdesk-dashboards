@@ -280,7 +280,7 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 /* ---------- proof (redacted ledger entry) — carries the blue through from Method, resolves to paper at Terms ---------- */
 .stage-blue{
   width:100%;
-  background:linear-gradient(180deg, var(--royal) 0%, var(--royal) 80%, var(--bg) 100%);
+  background:linear-gradient(180deg, var(--royal) 0%, var(--royal) 92%, var(--bg) 100%);
 }
 #proof .eyebrow{color:var(--hero-gold);}
 #proof .section-title{color:var(--hero-text);}
@@ -337,6 +337,24 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 .plan-features li::before{content:"—";color:var(--gold);flex-shrink:0;}
 .plan .btn-primary{width:100%;text-align:center;margin-top:auto;}
 .pricing-cta-row{display:flex;justify-content:center;margin-top:40px;}
+
+/* Terms sits on the blue carried over from Proof — same light-on-blue treatment */
+#terms .eyebrow{color:var(--hero-gold);}
+#terms .section-title{color:var(--hero-text);}
+#terms .section-sub{color:var(--hero-text-dim);}
+#terms .pricing-grid{border-color:rgba(255,255,255,.22);}
+#terms .plan-wrap{border-color:rgba(255,255,255,.22);}
+#terms .plan{background:rgba(255,255,255,.05);}
+#terms .plan.featured{background:rgba(255,255,255,.1);}
+#terms .plan-badge{color:var(--hero-gold);}
+#terms .plan-name{color:var(--hero-text-dim);}
+#terms .plan-price{color:var(--hero-text);}
+#terms .plan-price span{color:var(--hero-text-dim);}
+#terms .plan-cadence{color:var(--hero-text-dim);}
+#terms .plan-features li{color:var(--hero-text-dim);border-color:rgba(255,255,255,.18);}
+#terms .plan-features li::before{color:var(--hero-gold);}
+#terms .plan .btn-primary{background:transparent;border-color:var(--hero-gold);color:var(--hero-text);}
+#terms .plan .btn-primary:hover{background:var(--hero-gold);color:var(--midnight);}
 
 /* ---------- bridge line ---------- */
 .bridge-line{
@@ -538,7 +556,6 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
       </div>
     </div>
   </section>
-  </div>
 
   <section class="section" id="terms">
     <div class="eyebrow reveal">Private Desks</div>
@@ -591,6 +608,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
       </div>
     </div>
   </section>
+  </div>
 
   <div class="bridge-line reveal">
     <div class="txt"><span class="tick"></span>Also from this desk — OutreachOS: pipeline infrastructure for B2B agencies</div>
