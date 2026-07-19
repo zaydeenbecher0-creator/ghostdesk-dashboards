@@ -54,6 +54,16 @@ body::before{
   mix-blend-mode:overlay;
 }
 
+.intro-bg{
+  position:fixed;inset:0;
+  z-index:0;
+  background:radial-gradient(ellipse 100% 80% at 50% 0%, #3B5BDB 0%, #1E3A8A 30%, #16296B 62%, #0A1020 100%);
+  pointer-events:none;
+  will-change:opacity;
+  transition:opacity .35s ease-out;
+}
+@media (prefers-reduced-motion:reduce){.intro-bg{display:none;}}
+
 /* ---------- custom cursor ---------- */
 .cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%);}
 .cursor-dot{width:5px;height:5px;background:var(--gold);}
@@ -380,6 +390,7 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
 </head>
 <body>
 
+<div class="intro-bg" id="introBg"></div>
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
@@ -651,6 +662,22 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
 document.querySelectorAll('.brand img').forEach(img=>{
   img.addEventListener('error',()=>{img.style.display='none';});
 });
+
+// intro background: solid royal blue covers the whole screen at load, fades smoothly as you scroll through the hero
+const introBg=document.getElementById('introBg');
+const heroSectionEl=document.querySelector('.hero');
+if(introBg && heroSectionEl && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const updateIntroFade=()=>{
+    const fadeDistance=heroSectionEl.offsetHeight*0.9;
+    const opacity=Math.max(0,Math.min(1,1-window.scrollY/fadeDistance));
+    introBg.style.opacity=opacity;
+  };
+  updateIntroFade();
+  window.addEventListener('scroll',updateIntroFade,{passive:true});
+  window.addEventListener('resize',updateIntroFade);
+} else if(introBg){
+  introBg.style.opacity=0;
+}
 
 // custom cursor
 const dot=document.getElementById('cursorDot'), ring=document.getElementById('cursorRing');
