@@ -280,7 +280,7 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 /* ---------- proof (redacted ledger entry) — carries the blue through from Method, resolves to paper at Terms ---------- */
 .stage-blue{
   width:100%;
-  background:linear-gradient(180deg, var(--royal) 0%, var(--royal) 92%, var(--bg) 100%);
+  background:linear-gradient(180deg, var(--royal) 0%, var(--royal) 95%, var(--bg) 100%);
 }
 #proof .eyebrow{color:var(--hero-gold);}
 #proof .section-title{color:var(--hero-text);}
@@ -356,16 +356,20 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 #terms .plan .btn-primary{background:transparent;border-color:var(--hero-gold);color:var(--hero-text);}
 #terms .plan .btn-primary:hover{background:var(--hero-gold);color:var(--midnight);}
 
-/* ---------- bridge line ---------- */
+/* ---------- bridge line: a callout, not a footnote ---------- */
 .bridge-line{
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  padding:26px clamp(24px,6vw,80px);max-width:1180px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  max-width:1180px;margin:70px auto;padding:34px clamp(24px,6vw,50px);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);border-radius:6px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;
 }
-.bridge-line .txt{font-family:var(--mono);font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:10px;}
-.bridge-line .txt .tick{width:7px;height:7px;border-radius:50%;background:var(--gold);}
-.bridge-line a.go{font-family:var(--mono);font-size:13px;color:var(--gold);border-bottom:1px solid transparent;transition:border-color .2s;}
-.bridge-line a.go:hover{border-color:var(--gold);}
+.bridge-line .txt{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:.01em;color:var(--hero-text);display:flex;align-items:center;gap:12px;}
+.bridge-line .txt .tick{width:8px;height:8px;border-radius:50%;background:var(--hero-gold);box-shadow:0 0 8px rgba(228,198,138,.7);}
+.bridge-line a.go{
+  font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.03em;color:var(--midnight);
+  background:var(--hero-gold);padding:11px 20px;border-radius:2px;border:1px solid var(--hero-gold);
+  transition:background .2s,color .2s;
+}
+.bridge-line a.go:hover{background:transparent;color:var(--hero-gold);}
 
 /* ---------- faq ledger ---------- */
 .faq-ledger{margin-top:48px;}
@@ -608,11 +612,11 @@ footer{border-top:1px solid var(--border);padding:60px clamp(24px,6vw,80px) 40px
       </div>
     </div>
   </section>
-  </div>
 
   <div class="bridge-line reveal">
     <div class="txt"><span class="tick"></span>Also from this desk — OutreachOS: pipeline infrastructure for B2B agencies</div>
     <a class="go" href="../outreachos/">See OutreachOS →</a>
+  </div>
   </div>
 
   <section class="section" id="faq">
