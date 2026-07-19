@@ -314,11 +314,22 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 @media (max-width:900px){.plan-wrap{border-right:none;border-bottom:1px solid var(--border-strong);}
   .plan-wrap:last-child{border-bottom:none;}}
 .plan{
+  position:relative;overflow:hidden;
   background:var(--bg);
   padding:40px 32px;display:flex;flex-direction:column;height:100%;
-  transition:background .3s ease;
+  transition:background .3s ease,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease;
+}
+.plan::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);
+  transform:scaleX(0);transform-origin:left;transition:transform .35s ease;
+}
+.plan:hover::before{transform:scaleX(1);}
+.plan:hover{
+  transform:translateY(-6px);
+  box-shadow:0 26px 44px -22px rgba(0,0,0,.3);
 }
 .plan.featured{background:var(--surface);}
+.plan.featured:hover{box-shadow:0 26px 48px -20px rgba(0,0,0,.35);}
 .plan-badge{
   font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
   color:var(--gold);margin-bottom:16px;
@@ -347,6 +358,8 @@ h2.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4
 #terms .plan-wrap{border-color:rgba(255,255,255,.22);}
 #terms .plan{background:rgba(255,255,255,.05);}
 #terms .plan.featured{background:rgba(255,255,255,.1);}
+#terms .plan:hover{background:rgba(255,255,255,.09);box-shadow:0 26px 44px -20px rgba(0,0,0,.45);}
+#terms .plan.featured:hover{background:rgba(255,255,255,.16);}
 #terms .plan-badge{color:var(--hero-gold);}
 #terms .plan-name{color:var(--hero-text-dim);}
 #terms .plan-price{color:var(--hero-text);}
